@@ -18,19 +18,18 @@ return [
     'phone_link' => '+4998689344244',
     'email'      => 'info@cafe-am-schloss-schillingsfuerst.de',
 
-    // Öffnungszeiten (Startseite + Kontakt)
+    // Öffnungszeiten (Startseite + Kontakt). Zeilenumbruch mit \n oder <br>, z. B. '11:00 – 14:00 Uhr\n17:00 – 21:00 Uhr'
     'hours' => [
-        ['Mo – Di', 'Ruhetag'],
-        ['Mi – Fr', '[hh:mm] – [hh:mm] Uhr'],
-        ['Samstag', '[hh:mm] – [hh:mm] Uhr'],
-        ['Sonntag', '[hh:mm] – [hh:mm] Uhr'],
+        ['Mo', 'Ruhetag'],
+        ['Di – Sa', '11:00 – 15:00 Uhr\n17:00 – 21:00 Uhr'],
+        ['Sonntag', '11:00 – 22:00 Uhr'],
     ],
-    'hours_note'  => 'Warme Küche bis [hh:mm] Uhr. An Feiertagen gelten gesonderte Zeiten.',
+    'hours_note'  => 'Warme Küche bis 20:00 Uhr. An Feiertagen gelten gesonderte Zeiten.',
     // Kurzfassung für den Footer
     'hours_short' => [
-        'Mi – Sa: [hh:mm] – [hh:mm]',
-        'So: [hh:mm] – [hh:mm]',
-        'Mo – Di: Ruhetag',
+        'Di – Sa:\n11:00 – 15:00 Uhr\n17:00 – 21:00 Uhr',
+        'So: 11:00 – 22:00 Uhr',
+        'Mo: Ruhetag',
     ],
 
     // Kartenposition (OpenStreetMap, Zwei-Klick-Lösung)

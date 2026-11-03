@@ -19,7 +19,7 @@ $cfg = config();
       </div>
       <div class="col-12 col-sm-6 col-lg">
         <h2 class="footer-title">Öffnungszeiten</h2>
-        <p class="mb-0"><?= implode('<br>', array_map('e', $cfg['hours_short'])) ?></p>
+        <p class="mb-0"><?= implode('<br>', array_map('e_lines', $cfg['hours_short'])) ?></p>
       </div>
       <nav class="col-12 col-sm-6 col-lg" aria-label="Seiten">
         <h2 class="footer-title">Seiten</h2>

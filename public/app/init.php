@@ -48,6 +48,18 @@ function e($value): string
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+/**
+ * Text mit Zeilenumbrüchen sicher ausgeben. Als Umbruch gelten: echter Zeilenumbruch,
+ * die Zeichenfolge \n (auch in '…'-Strings), <br> sowie ein Array mit mehreren Zeilen.
+ */
+function e_lines($value): string
+{
+    $lines = is_array($value)
+        ? $value
+        : preg_split('~\r\n|\r|\n|\\\\n|<br\s*/?>~i', (string) $value);
+    return implode('<br>', array_map('e', array_map('trim', $lines)));
+}
+
 /** URL-Präfix der Website ('' im Webroot, sonst z. B. '/cafe'). */
 function base_path(): string
 {

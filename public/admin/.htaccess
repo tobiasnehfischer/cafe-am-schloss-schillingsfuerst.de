@@ -10,7 +10,7 @@
 
 AuthType Basic
 AuthName "Pflege Cafe am Schloss"
-AuthUserFile /.htpasswd
+AuthUserFile /home/web687/.htpasswd
 Require valid-user
 
 <IfModule mod_headers.c>

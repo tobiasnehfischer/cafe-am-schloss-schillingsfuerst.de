@@ -22,13 +22,13 @@ require APP . '/layout/header.php';
           <img src="<?= e(asset('assets/img/logo.png')) ?>" alt="Logo Café am Schloss mit Zeichnung des Schlosses" width="690" height="620" class="hero__logo img-fluid" fetchpriority="high">
         </picture>
       </div>
-      <div class="col-lg-6 d-flex flex-column gap-4 align-items-center align-items-lg-start text-center text-lg-start">
+      <div class="col-lg-6 d-flex flex-column gap-4 align-items-center text-center">
         <p class="script hero__script mb-0">Herzlich willkommen!</p>
         <?= divider('divider--hero') ?>
         <h1 class="hero__title mb-0">Fränkische Küche</h1>
         <p class="tagline mb-0">Regional <span>•</span> Saisonal <span>•</span> Gutbürgerlich</p>
         <p class="lead-text mb-0">Schön, dass Sie da sind! Im Café am Schloss in Schillingsfürst erwartet Sie ehrliche fränkische Küche mit Zutaten aus der Region – vom gemütlichen Mittagessen über Kaffee und hausgemachten Kuchen bis zum Sonntagsbraten im Kreis der Familie.</p>
-        <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-lg-start">
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
           <a class="btn btn-cafe" href="<?= e(url('speisekarte')) ?>">Unsere Speisekarten</a>
           <a class="btn btn-cafe-outline" href="<?= e(url('kontakt')) ?>">Anfahrt &amp; Kontakt</a>
         </div>
@@ -58,10 +58,10 @@ require APP . '/layout/header.php';
         <h3>Öffnungszeiten</h3>
         <dl class="hours">
 <?php foreach ($cfg['hours'] as [$day, $time]): ?>
-          <dt><?= e($day) ?></dt><dd><?= e($time) ?></dd>
+          <dt><?= e($day) ?></dt><dd><?= e_lines($time) ?></dd>
 <?php endforeach; ?>
         </dl>
-        <p class="note"><?= e($cfg['hours_note']) ?></p>
+        <p class="note"><?= e_lines($cfg['hours_note']) ?></p>
       </article>
     </div>
     <div class="col-md-12 col-lg-4">

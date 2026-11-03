@@ -149,7 +149,7 @@ $menus  = menus_available($content);
   body { --bs-body-font-size: 1rem; }
   .admin-card { background: var(--cafe-surface); border: 1px solid var(--cafe-border); border-radius: 16px; padding: 1.75rem; }
   .admin-card h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: .04em; display: flex; align-items: center; gap: .6rem; margin-bottom: 1.25rem; }
-  .admin-card h2 i { color: var(--cafe-gold-text); }
+  .admin-card h2 i { color: var(--cafe-gold); }
   .menu-row + .menu-row { border-top: 1px solid var(--cafe-border); padding-top: 1.25rem; margin-top: 1.25rem; }
   .form-switch .form-check-input { width: 3em; height: 1.6em; margin-top: 0; cursor: pointer; }
   .form-switch .form-check-label { padding-left: .75rem; cursor: pointer; font-size: 1.05rem; }

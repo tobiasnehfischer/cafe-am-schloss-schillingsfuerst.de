@@ -15,17 +15,17 @@ a { color: #7A5410; }
 a:hover { color: #1F2E1A; }
 img { max-width: 100%; height: auto; display: block; }
 
-main { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: clamp(2.5rem, 7vw, 4.5rem) 1.25rem 3rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.5rem; }
+main { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: clamp(2.5rem, 7vw, 4.5rem) 1.5rem 3rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.5rem; }
 
 .logo { width: 100%; max-width: 360px; }
 .script { margin: 0; font-family: "Abstract Spectrum", "Noto Serif", Georgia, serif; font-weight: 400; line-height: 1.1; font-size: clamp(2.6rem, 8vw, 3.75rem); }
 h1 { margin: 0; font-weight: 400; font-size: clamp(1.3rem, 4vw, 1.75rem); letter-spacing: .1em; }
 .tagline { margin: 0; letter-spacing: .16em; color: #3A4632; }
-.tagline span { color: #B07E22; }
+.tagline span { color: #B2851C; }
 .lead { margin: 0; font-size: 1.125rem; line-height: 1.75; color: #2D3A27; max-width: 560px; }
 
 .divider { display: flex; align-items: center; gap: 14px; width: 100%; max-width: 420px; }
-.divider span { flex: 1; height: 2px; background: #B07E22; border-radius: 2px; }
+.divider span { flex: 1; height: 2px; background: #B2851C; border-radius: 2px; }
 .divider img { width: 34px; }
 
 .card { width: 100%; max-width: 560px; background: #FDF8EC; border: 1px solid #E6D6AE; border-radius: 20px; padding: 1.75rem 1.5rem; display: grid; gap: 1.25rem; }
@@ -35,12 +35,12 @@ h1 { margin: 0; font-weight: 400; font-size: clamp(1.3rem, 4vw, 1.75rem); letter
 
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.5rem; border-radius: 999px; background: #24361E; color: #FDF8EC; text-decoration: none; letter-spacing: .04em; }
 .btn:hover, .btn:focus-visible { background: #34492B; color: #FDF8EC; }
-a:focus-visible { outline: 3px solid #B07E22; outline-offset: 2px; }
+a:focus-visible { outline: 3px solid #B2851C; outline-offset: 2px; }
 
 .welcome { width: 100%; max-width: 380px; margin-top: .5rem; }
 
 footer { background: #F6E3B8; border-top: 1px solid #E2CC97; font-size: .875rem; }
-footer div { max-width: 1180px; margin: 0 auto; padding: 1rem 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1.5rem; }
+footer div { max-width: 1180px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1.5rem; }
 footer a { color: #1F2E1A; text-decoration: none; margin-left: 1.25rem; }
 footer a:first-child { margin-left: 0; }
 footer a:hover { color: #7A5410; text-decoration: underline; }

@@ -89,12 +89,12 @@ $inv = static fn(string $field): string => isset($errors[$field]) ? ' is-invalid
 <section class="hero hero--sub">
   <div class="container">
     <div class="row align-items-center g-5">
-      <div class="col-lg-6 d-flex flex-column gap-4 align-items-start">
+      <div class="col-lg-6 d-flex flex-column gap-4 align-items-center text-center">
         <p class="script hero__script mb-0">Feiern am Schloss</p>
         <?= divider('divider--hero') ?>
         <h1 class="hero__title mb-0">Feierlichkeiten</h1>
         <p class="lead-text mb-0">Ob Konfirmation, Hochzeit oder runder Geburtstag – bei uns feiern Sie in gemütlicher Atmosphäre am Schloss. Wir kümmern uns um Essen, Getränke und eine schön gedeckte Tafel, damit Sie den Tag mit Ihren Gästen genießen können.</p>
-        <div class="d-flex gap-3 flex-wrap">
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
           <a class="btn btn-cafe" href="#anfrage">Feier anfragen</a>
           <a class="btn btn-cafe-outline" href="tel:<?= e($cfg['phone_link']) ?>"><i class="fa-light fa-phone" aria-hidden="true"></i><?= e($cfg['phone']) ?></a>
         </div>

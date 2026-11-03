@@ -39,10 +39,10 @@ require APP . '/layout/header.php';
         <h2><i class="fa-light fa-clock" aria-hidden="true"></i>Öffnungszeiten</h2>
         <dl class="hours">
 <?php foreach ($cfg['hours'] as [$day, $time]): ?>
-          <dt><?= e($day) ?></dt><dd><?= e($time) ?></dd>
+          <dt><?= e($day) ?></dt><dd><?= e_lines($time) ?></dd>
 <?php endforeach; ?>
         </dl>
-        <p class="note"><?= e($cfg['hours_note']) ?></p>
+        <p class="note"><?= e_lines($cfg['hours_note']) ?></p>
       </div>
       <div class="contact-block">
         <h2><i class="fa-light fa-square-parking" aria-hidden="true"></i>Anfahrt &amp; Parken</h2>
