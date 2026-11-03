@@ -1,0 +1,13 @@
+# Laufzeitdaten (werden auf dem Server über die Pflegeoberfläche erzeugt)
+/public/data/*
+!/public/data/.htaccess
+/public/karten/*
+!/public/karten/.htaccess
+
+# SMTP-Zugangsdaten (Vorlage: public/app/smtp.example.php)
+/public/app/smtp.php
+.htpasswd
+
+# lokal
+.DS_Store
+Thumbs.db

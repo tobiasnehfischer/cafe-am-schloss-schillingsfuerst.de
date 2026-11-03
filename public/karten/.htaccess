@@ -1,0 +1,10 @@
+# Nur PDFs ausliefern, niemals Skripte ausführen
+Options -Indexes
+<FilesMatch "\.(?i:php\d?|phtml|phar|pl|py|cgi|sh|html?|svg)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_headers.c>
+    <FilesMatch "\.pdf$">
+        Header set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+</IfModule>

@@ -1,0 +1,56 @@
+# Café am Schloss – Apache-Konfiguration
+
+# --- Vorschau unter /dev/: die 4 Zeilen darunter einkommentieren (# entfernen). ---
+# --- Beim Livegang im Webroot wieder auskommentieren oder löschen!              ---
+# AuthType Basic
+# AuthName "Vorschau Cafe am Schloss"
+# AuthUserFile /ABSOLUTER/PFAD/ZUR/.htpasswd
+# Require valid-user
+
+Options -Indexes
+DirectoryIndex index.php
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # HTTPS + www erzwingen.
+    # TLS endet am Load Balancer (nginx); Apache bekommt die Anfrage immer per HTTP.
+    # Deshalb NICHT auf %{HTTPS} prüfen (wäre immer „off“ → Endlosschleife),
+    # sondern auf den Header X-Forwarded-Proto vom Load Balancer.
+    RewriteCond %{HTTP_HOST} ^cafe-am-schloss-schillingsfuerst\.de$ [NC,OR]
+    RewriteCond %{HTTP:X-Forwarded-Proto} =http [NC]
+    RewriteRule ^ https://www.cafe-am-schloss-schillingsfuerst.de%{REQUEST_URI} [R=301,L]
+
+    # Interne Ordner und Dateien sperren
+    RewriteRule ^(app|data)(/|$) - [F,L]
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+    RewriteRule (^|/)(README\.md|TODO\.md|composer\.(json|lock))$ - [F,L]
+
+    # Alles, was keine echte Datei/kein Ordner ist, an den Router (schöne URLs)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType application/pdf "access plus 1 hour"
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml font/ttf
+</IfModule>

@@ -1,0 +1,17 @@
+{
+    "name": "shw/cafe-am-schloss",
+    "description": "Website Café am Schloss Schillingsfürst",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=7.4",
+        "phpmailer/phpmailer": "^7.1"
+    },
+    "config": {
+        "vendor-dir": "public/app/vendor",
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "7.4.0"
+        }
+    }
+}

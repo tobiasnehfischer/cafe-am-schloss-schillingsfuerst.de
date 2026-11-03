@@ -1,0 +1,31 @@
+# Café am Schloss – Baustellenseite (Apache)
+Options -Indexes
+DirectoryIndex index.html
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # HTTPS + www erzwingen. TLS endet am Load Balancer (nginx), Apache sieht nur HTTP:
+    # deshalb X-Forwarded-Proto prüfen, NICHT %{HTTPS} (sonst Endlosschleife).
+    RewriteCond %{HTTP_HOST} ^cafe-am-schloss-schillingsfuerst\.de$ [NC,OR]
+    RewriteCond %{HTTP:X-Forwarded-Proto} =http [NC]
+    RewriteRule ^ https://www.cafe-am-schloss-schillingsfuerst.de%{REQUEST_URI} [R=301,L]
+
+    # Gleiche URLs wie die spätere Website
+    RewriteRule ^(impressum|datenschutz)/?$ $1.html [L]
+    RewriteRule ^(index|impressum|datenschutz)\.html$ - [L]
+
+    # Alle anderen Adressen zeigen die Baustellenseite (z. B. alte Links, /speisekarte)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # HTML nicht cachen, damit nach dem Livegang sofort die neue Seite erscheint
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>
