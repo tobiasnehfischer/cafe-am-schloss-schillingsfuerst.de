@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Café am Schloss – Startseite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;1,400&amp;family=Kaushan+Script&amp;display=swap">
+<style>
+body{margin:0;background:#FBF4E2}
+a{color:#7A5410}a:hover{color:#1F2E1A}
+.script{font-family:'Abstract Spectrum','Kaushan Script',cursive;font-weight:400}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;box-sizing:border-box}
+.hdr{position:sticky;top:0;z-index:20;background:#FDF8EC;border-bottom:1px solid #E6D6AE}
+.hdr-in{position:relative;display:flex;align-items:center;justify-content:space-between;gap:24px;height:88px}
+.nav{display:flex;align-items:center;gap:2px}
+.nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;text-decoration:none;color:#1F2E1A;letter-spacing:.06em;font-size:16px}
+.nav a:hover{color:#7A5410}
+.nav a.on{color:#7A5410;box-shadow:inset 0 -2px 0 #B07E22}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;background:#24361E;color:#FDF8EC;text-decoration:none;font-size:16px;letter-spacing:.04em}
+.btn:hover{background:#34492B;color:#FDF8EC}
+.btn-o{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border-radius:999px;border:1.5px solid #24361E;color:#24361E;text-decoration:none;font-size:16px;letter-spacing:.04em}
+.btn-o:hover{background:#24361E;color:#FDF8EC}
+.burger{display:none;align-items:center;justify-content:center;width:48px;height:48px;border:1px solid #D9C48F;border-radius:12px;background:transparent;color:#1F2E1A;cursor:pointer}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.g4{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+.ftr a{color:#1F2E1A;text-decoration:none}.ftr a:hover{color:#7A5410;text-decoration:underline}
+@media (max-width:980px){
+.nav{display:none;position:absolute;top:88px;left:-32px;right:-32px;flex-direction:column;align-items:stretch;background:#FDF8EC;padding:8px 32px 24px;border-bottom:1px solid #E6D6AE}
+.nav.open{display:flex}
+.nav a.on{box-shadow:inset 3px 0 0 #B07E22}
+.burger{display:inline-flex}
+.hdr-cta{display:none}
+.g2,.g3,.g4{grid-template-columns:minmax(0,1fr);gap:32px}
+.wrap{padding:0 20px}
+}
+</style>
+</head>
+<body>
+<div style="font-family: 'Noto Serif', Georgia, serif; color: #1F2E1A; background: #FBF4E2; min-height: 100vh">
+
+
+<div style="background: #24361E; color: #FDF8EC">
+<div class="wrap" style="display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 52px; padding-top: 10px; padding-bottom: 10px; text-align: center; flex-wrap: wrap">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E2B65C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"></path></svg>
+<span style="font-size: 15px; letter-spacing: .03em"><strong style="font-weight: 600">Betriebsurlaub:</strong> Vom [TT.MM.] bis [TT.MM.] bleibt unser Café geschlossen. Ab [TT.MM.] sind wir gerne wieder für Sie da.</span>
+</div>
+</div>
+
+
+<header class="hdr">
+<div class="wrap hdr-in">
+<a href="index.html" aria-label="Café am Schloss – zur Startseite" style="display: flex; align-items: center"><img src="assets/wortmarke.png" alt="Café am Schloss" style="height: 64px; width: auto; display: block"></a>
+<nav class="nav" aria-label="Hauptnavigation">
+<a class="on" href="index.html" aria-current="page">Startseite</a>
+<a href="speisekarten.html">Speisekarten</a>
+<a href="feierlichkeiten.html">Feierlichkeiten</a>
+<a href="#kontakt">Kontakt &amp; Anfahrt</a>
+</nav>
+<div style="display: flex; align-items: center; gap: 12px">
+<button class="burger" type="button" aria-label="Menü öffnen" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+</div>
+</div>
+</header>
+
+<main>
+<section style="background: radial-gradient(ellipse at 30% 40%, #FFFBEF 0%, #FBF4E2 55%, #F6E6BF 100%); border-bottom: 1px solid #EBDDB8">
+<div class="wrap g2" style="align-items: center; padding-top: 72px; padding-bottom: 80px">
+<div style="display: flex; justify-content: center">
+<img src="assets/logo.png" alt="Logo Café am Schloss mit Zeichnung des Schlosses" style="width: 100%; max-width: 520px; height: auto; display: block">
+</div>
+<div style="display: flex; flex-direction: column; gap: 22px; align-items: flex-start">
+<p class="script" style="margin: 0; font-size: 64px; line-height: 1.05; color: #1F2E1A">Herzlich willkommen!</p>
+<div style="display: flex; align-items: center; gap: 14px; width: 100%; max-width: 460px">
+<span style="flex: 1; height: 2px; background: #B07E22; border-radius: 2px"></span>
+<img src="assets/lilie.png" alt="" style="width: 34px; height: auto">
+<span style="flex: 1; height: 2px; background: #B07E22; border-radius: 2px"></span>
+</div>
+<h1 style="margin: 0; font-weight: 400; font-size: 30px; letter-spacing: .08em">Fränkische Küche</h1>
+<p style="margin: 0; font-size: 16px; letter-spacing: .16em; color: #3A4632">Regional <span style="color: #B07E22">•</span> Saisonal <span style="color: #B07E22">•</span> Gutbürgerlich</p>
+<p style="margin: 0; font-size: 18px; line-height: 1.75; max-width: 520px; color: #2D3A27">Schön, dass Sie da sind! Im Café am Schloss in Schillingsfürst erwartet Sie ehrliche fränkische Küche mit Zutaten aus der Region – vom gemütlichen Mittagessen über Kaffee und hausgemachten Kuchen bis zum Sonntagsbraten im Kreis der Familie.</p>
+<div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px">
+<a class="btn" href="speisekarten.html">Unsere Speisekarten</a>
+<a class="btn-o" href="#kontakt">Anfahrt &amp; Kontakt</a>
+</div>
+</div>
+</div>
+</section>
+
+<section class="wrap" style="padding-top: 88px; padding-bottom: 88px">
+<div style="text-align: center; margin-bottom: 48px">
+<p class="script" style="margin: 0 0 6px; font-size: 44px; color: #7A5410">Gut zu wissen</p>
+<h2 style="margin: 0; font-weight: 400; font-size: 32px; letter-spacing: .1em">Ihr Besuch bei uns</h2>
+</div>
+<div class="g3">
+<article style="background: #FDF8EC; border: 1px solid #E6D6AE; border-radius: 20px; padding: 36px 32px; display: flex; flex-direction: column; gap: 16px">
+<div style="width: 56px; height: 56px; border-radius: 50%; background: #F6E3B8; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7A5410" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+<h3 style="margin: 0; font-weight: 600; font-size: 22px; letter-spacing: .06em">Anschrift &amp; Kontakt</h3>
+<p style="margin: 0; font-size: 17px; line-height: 1.7">Café am Schloss<br>Am Wall 10<br>91583 Schillingsfürst</p>
+<p style="margin: 0; font-size: 17px; line-height: 1.7">Telefon: <a href="tel:+4998689344244">09868 9344244</a></p>
+<a href="#kontakt" style="margin-top: auto; font-size: 16px; letter-spacing: .04em">Anfahrt ansehen →</a>
+</article>
+<article style="background: #FDF8EC; border: 1px solid #E6D6AE; border-radius: 20px; padding: 36px 32px; display: flex; flex-direction: column; gap: 16px">
+<div style="width: 56px; height: 56px; border-radius: 50%; background: #F6E3B8; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7A5410" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div>
+<h3 style="margin: 0; font-weight: 600; font-size: 22px; letter-spacing: .06em">Öffnungszeiten</h3>
+<dl style="margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 20px; font-size: 16px; line-height: 1.5">
+<dt style="font-weight: 600">Mo – Di</dt><dd style="margin: 0">Ruhetag</dd>
+<dt style="font-weight: 600">Mi – Fr</dt><dd style="margin: 0">[hh:mm] – [hh:mm] Uhr</dd>
+<dt style="font-weight: 600">Samstag</dt><dd style="margin: 0">[hh:mm] – [hh:mm] Uhr</dd>
+<dt style="font-weight: 600">Sonntag</dt><dd style="margin: 0">[hh:mm] – [hh:mm] Uhr</dd>
+</dl>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #4A5541; font-style: italic">Warme Küche bis [hh:mm] Uhr. An Feiertagen gelten gesonderte Zeiten.</p>
+</article>
+<article style="background: #FDF8EC; border: 1px solid #E6D6AE; border-radius: 20px; padding: 36px 32px; display: flex; flex-direction: column; gap: 16px">
+<div style="width: 56px; height: 56px; border-radius: 50%; background: #F6E3B8; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7A5410" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2"></path><path d="M8 7h8M8 11h6"></path></svg></div>
+<h3 style="margin: 0; font-weight: 600; font-size: 22px; letter-spacing: .06em">Speisekarten</h3>
+<p style="margin: 0; font-size: 17px; line-height: 1.7">Fränkische Klassiker, saisonale Gerichte, Kaffee und hausgemachter Kuchen – und sonntags unsere eigene Sonntagskarte.</p>
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+<a class="btn" href="pdf/speisekarte.pdf"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>Speisekarte (PDF)</a>
+<a class="btn-o" href="pdf/sonntagskarte.pdf"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>Sonntagskarte (PDF)</a>
+</div>
+</article>
+</div>
+</section>
+
+<section style="background: #F6E3B8">
+<div class="wrap g2" style="align-items: center; padding-top: 80px; padding-bottom: 80px">
+<div style="display: flex; flex-direction: column; gap: 18px">
+<p class="script" style="margin: 0; font-size: 52px; line-height: 1.1">Feiern am Schloss</p>
+<p style="margin: 0; font-size: 18px; line-height: 1.75; color: #2D3A27">Konfirmation, Kommunion, Taufe, Hochzeit, runder Geburtstag oder Trauerkaffee: Wir richten Ihre Feier aus – mit fränkischem Menü oder Buffet, ganz nach Ihren Wünschen.</p>
+<div><a class="btn" href="feierlichkeiten.html">Mehr zu Feierlichkeiten</a></div>
+</div>
+<div style="aspect-ratio: 4 / 3; border-radius: 20px; border: 2px dashed #C9A45C; background: #FBEFD2; display: flex; align-items: center; justify-content: center; text-align: center; color: #6B5A35; font-size: 16px; letter-spacing: .04em; padding: 24px">[Foto: festlich gedeckte Tafel im Gastraum]</div>
+</div>
+</section>
+
+<section id="kontakt" class="wrap" style="padding-top: 88px; padding-bottom: 72px">
+<div style="text-align: center; margin-bottom: 48px">
+<p class="script" style="margin: 0 0 6px; font-size: 44px; color: #7A5410">So finden Sie uns</p>
+<h2 style="margin: 0; font-weight: 400; font-size: 32px; letter-spacing: .1em">Kontakt &amp; Anfahrt</h2>
+</div>
+<div class="g2" style="align-items: stretch">
+<div style="display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0 0 4px; font-weight: 600; font-size: 20px; letter-spacing: .06em">Adresse</h3>
+<p style="margin: 0; font-size: 17px; line-height: 1.7">Café am Schloss<br>Am Wall 10, 91583 Schillingsfürst</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0 0 4px; font-weight: 600; font-size: 20px; letter-spacing: .06em">Kontakt</h3>
+<p style="margin: 0; font-size: 17px; line-height: 1.7">Telefon: <a href="tel:+4998689344244">09868 9344244</a><br>E-Mail: <a href="mailto:[info@ihre-domain.de]">[info@ihre-domain.de]</a></p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #4A5541; font-style: italic">Reservierungen nehmen wir gerne telefonisch entgegen.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0 0 4px; font-weight: 600; font-size: 20px; letter-spacing: .06em">Anfahrt &amp; Parken</h3>
+<p style="margin: 0; font-size: 17px; line-height: 1.7">[Kurze Wegbeschreibung, z. B. ab Ortsmitte oder Autobahnausfahrt.]<br>[Hinweis zu Parkplätzen und Barrierefreiheit.]</p>
+</div>
+<div><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Am+Wall+10+91583+Schillingsf%C3%BCrst">Route planen</a></div>
+</div>
+<div style="min-height: 400px; border-radius: 20px; border: 2px dashed #C9A45C; background: #F3E8CC; display: flex; flex-direction: column; gap: 12px; align-items: center; justify-content: center; text-align: center; color: #6B5A35; padding: 24px">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#7A5410" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+<span style="font-size: 16px; letter-spacing: .04em">[Karte – z. B. OpenStreetMap oder Google Maps<br>mit Zwei-Klick-Lösung für den Datenschutz]</span>
+</div>
+</div>
+</section>
+
+<section class="wrap" style="display: flex; justify-content: center; padding-bottom: 64px">
+<img src="assets/wir-freuen-uns.png" alt="Wir freuen uns auf Ihren Besuch!" style="width: 100%; max-width: 480px; height: auto">
+</section>
+</main>
+
+<footer class="ftr" style="background: #F6E3B8; border-top: 1px solid #E2CC97">
+<div class="wrap g4" style="padding-top: 56px; padding-bottom: 40px; font-size: 15px; line-height: 1.75">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<img src="assets/wortmarke.png" alt="Café am Schloss" style="width: 170px; height: auto">
+<p style="margin: 0; letter-spacing: .08em">Fränkische Küche</p>
+<p style="margin: 0; font-size: 13px; letter-spacing: .12em; color: #3A4632">Regional • Saisonal • Gutbürgerlich</p>
+</div>
+<div>
+<h2 style="margin: 0 0 10px; font-size: 16px; font-weight: 600; letter-spacing: .1em">Kontakt</h2>
+<p style="margin: 0">Am Wall 10<br>91583 Schillingsfürst<br><a href="tel:+4998689344244">09868 9344244</a></p>
+</div>
+<div>
+<h2 style="margin: 0 0 10px; font-size: 16px; font-weight: 600; letter-spacing: .1em">Öffnungszeiten</h2>
+<p style="margin: 0">Mi – Sa: [hh:mm] – [hh:mm]<br>So: [hh:mm] – [hh:mm]<br>Mo – Di: Ruhetag</p>
+</div>
+<nav aria-label="Seiten">
+<h2 style="margin: 0 0 10px; font-size: 16px; font-weight: 600; letter-spacing: .1em">Seiten</h2>
+<div style="display: flex; flex-direction: column"><a href="index.html">Startseite</a><a href="speisekarten.html">Speisekarten</a><a href="feierlichkeiten.html">Feierlichkeiten</a></div>
+</nav>
+</div>
+<div style="border-top: 1px solid #E2CC97">
+<div class="wrap" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-top: 18px; padding-bottom: 18px; font-size: 14px">
+<span>© 2026 Café am Schloss, Schillingsfürst</span>
+<span style="display: flex; gap: 24px"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></span>
+</div>
+</div>
+</footer>
+</div>
+<script>
+document.querySelector('.burger').addEventListener('click',function(){var n=document.querySelector('.nav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',o?'true':'false');});
+</script>
+</body>
+</html>
