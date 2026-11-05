@@ -131,10 +131,45 @@ a:focus-visible, button:focus-visible, .btn:focus-visible { outline: 3px solid v
 .section-head__script--dark { color: var(--cafe-gold); }
 .section-head__title, .section-title { margin: 0; font-size: clamp(1.6rem, 3.5vw, 2rem); letter-spacing: .1em; }
 
+/* Deko: Pinselstrich hinter Abschnittsüberschriften, Blätter links/rechts vom Titel */
+.section-head { position: relative; isolation: isolate; padding: 1.25rem 0 .75rem; }
+.section-head::before {
+  content: ""; position: absolute; z-index: -1; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(620px, 100%); height: calc(100% + 1rem); background: url("../img/deko/backdrop.svg") center / 100% 100% no-repeat; opacity: .85;
+}
+.band .section-head::before { opacity: .5; filter: brightness(1.06); }
+.section-head__title { display: inline-flex; align-items: center; justify-content: center; gap: .9rem; }
+.section-head__title::before, .section-head__title::after {
+  content: ""; flex: 0 0 auto; width: 2.4rem; height: 2.4rem; background: center / contain no-repeat;
+}
+.section-head__title::before { background-image: url("../img/deko/leaf-left.svg"); }
+.section-head__title::after { background-image: url("../img/deko/leaf-right.svg"); }
+
+/* Deko: Pinselstrich hinter „Wir freuen uns auf Ihren Besuch!“ */
+.welcome-wrap { position: relative; isolation: isolate; display: inline-block; padding: 1.5rem 2rem; }
+.welcome-wrap::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: url("../img/deko/backdrop.svg") center / 100% 100% no-repeat; opacity: .8;
+}
+
 .hero { background: radial-gradient(ellipse at 30% 40%, #FFFBEF 0%, var(--cafe-bg) 55%, #F6E6BF 100%); border-bottom: 1px solid #EBDDB8; padding: clamp(3rem, 7vw, 4.5rem) 0 clamp(3.5rem, 7vw, 5rem); }
 .hero__logo { width: 100%; max-width: 520px; }
 .hero__script { font-size: clamp(2.75rem, 7vw, 4rem); line-height: 1.05; }
 .hero__title { font-size: clamp(1.6rem, 3.5vw, 1.875rem); letter-spacing: .08em; }
+
+/* Eröffnungs-Hero (Startseite, zeitgesteuert über config 'opening_hero_until') */
+.event__title { font-size: clamp(3.75rem, 11vw, 6rem); line-height: 1; color: var(--cafe-green); }
+.event__date { display: flex; align-items: center; gap: 1rem; font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 600; letter-spacing: .04em; line-height: 1.25; }
+.event__date::before, .event__date::after { content: ""; flex: 0 0 clamp(1.5rem, 5vw, 3.5rem); height: 2px; background: var(--cafe-gold); border-radius: 2px; }
+.event__time {
+  padding: .35rem 2.5rem; background: var(--cafe-gold); color: var(--cafe-surface); font-size: 1.5rem; letter-spacing: .06em; line-height: 1.4;
+  clip-path: polygon(0 0, 100% 0, calc(100% - .9rem) 50%, 100% 100%, 0 100%, .9rem 50%);
+}
+.event__sub { display: flex; align-items: center; gap: 1rem; font-size: clamp(2.25rem, 6vw, 2.9rem); color: var(--cafe-green); }
+.event__sub i { font-size: .7em; color: var(--cafe-gold); }
+.event__lead { font-style: italic; font-size: 1.25rem; }
+.event__next { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.75rem 1rem 1.25rem; background: var(--cafe-surface); border: 1px solid var(--cafe-border); border-radius: 20px; }
+.event__next-label { font-size: .9375rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cafe-gold-text); }
+.event__next-title { font-size: 1.6rem; font-weight: 600; letter-spacing: .04em; line-height: 1.2; }
 
 .page-hero { background: radial-gradient(ellipse at 50% 30%, #FFFBEF 0%, var(--cafe-bg) 60%, #F6E6BF 100%); border-bottom: 1px solid #EBDDB8; padding: clamp(3rem, 7vw, 4rem) 0 clamp(2.5rem, 6vw, 3.5rem); }
 .page-hero__script { font-size: clamp(2.4rem, 6vw, 2.9rem); color: var(--cafe-gold); }
@@ -172,6 +207,26 @@ a:focus-visible, button:focus-visible, .btn:focus-visible { outline: 3px solid v
 .menu-card__meta { margin: 0; font-size: .875rem; letter-spacing: .04em; color: var(--cafe-muted); }
 .menu-card__actions { display: grid; gap: .6rem; width: 100%; max-width: 260px; }
 .empty-state { max-width: 640px; }
+
+/* ---------- Online-Speisekarte ---------- */
+.sample-note { max-width: 640px; margin: 0 auto 2rem; padding: .6rem 1rem; border: 2px dashed #C9A45C; border-radius: 12px; background: #FBEFD2; color: #6B5A35; text-align: center; letter-spacing: .03em; }
+#speisekarte { scroll-margin-top: 76px; }
+.menu-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-bottom: 2.5rem; }
+.menu-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: .4rem 1.1rem; border: 1px solid var(--cafe-border); border-radius: 999px; background: var(--cafe-surface); color: var(--cafe-text); text-decoration: none; letter-spacing: .04em; }
+.menu-nav a:hover { border-color: var(--cafe-gold); color: var(--cafe-gold-text); }
+.menu-cat { scroll-margin-top: 110px; padding: 2rem 2rem 1.5rem; background: var(--cafe-surface); border: 1px solid var(--cafe-border); border-radius: 20px; }
+.menu-cat__head { display: flex; align-items: center; gap: 1rem; padding-bottom: 1rem; margin-bottom: .5rem; border-bottom: 2px solid var(--cafe-gold); }
+.menu-cat__head h3 { margin: 0; font-size: 1.5rem; letter-spacing: .08em; }
+.menu-cat__head .note { margin-top: .2rem; font-size: .875rem; }
+.dishes { list-style: none; margin: 0; padding: 0; }
+.dish { padding: .85rem 0; }
+.dish + .dish { border-top: 1px solid #EFE3C4; }
+.dish__head { display: flex; align-items: baseline; gap: .5rem; }
+.dish__name { font-weight: 600; letter-spacing: .02em; }
+.dish__dots { flex: 1 1 1.5rem; min-width: 1.5rem; border-bottom: 2px dotted #D9C48F; transform: translateY(-.3em); }
+.dish__price { white-space: nowrap; font-weight: 600; color: var(--cafe-text); }
+.dish__text { margin: .2rem 0 0; font-size: .9375rem; line-height: 1.55; color: var(--cafe-muted); }
+.dish__tag { display: inline-flex; align-items: center; gap: .3rem; margin-left: .35rem; padding: .05rem .5rem; border-radius: 999px; background: #E9EFD9; color: #3E5A2C; font-size: .75rem; font-weight: 400; letter-spacing: .03em; vertical-align: .1em; white-space: nowrap; }
 
 .photo-placeholder { aspect-ratio: 4 / 3; border-radius: 20px; border: 2px dashed #C9A45C; background: #FBEFD2; display: flex; align-items: center; justify-content: center; text-align: center; color: #6B5A35; letter-spacing: .04em; padding: 1.5rem; }
 
@@ -231,11 +286,18 @@ a:focus-visible, button:focus-visible, .btn:focus-visible { outline: 3px solid v
 }
 
 @media (max-width: 575.98px) {
+  .section-head__title { gap: .5rem; }
+  .section-head__title::before, .section-head__title::after { width: 1.6rem; height: 1.6rem; }
+  .welcome-wrap { padding: 1rem 1rem; }
   .container { --bs-gutter-x: 3rem; } /* 24px Seitenabstand statt 12px */
   .tagline { font-size: .9rem; letter-spacing: .08em; }
+  .event__date { font-size: 1.3rem; gap: .5rem; }
+  .event__date::before, .event__date::after { flex-basis: 1rem; }
   .hero__logo { max-width: 300px; }
   .info-card, .form-card { padding: 1.75rem 1.4rem; }
   .menu-card { padding: 2rem 1.5rem; }
+  .menu-cat { padding: 1.5rem 1.25rem 1rem; scroll-margin-top: 90px; }
+  .menu-cat__head h3 { font-size: 1.3rem; }
   .hours { gap: .4rem 1rem; }
 }
 

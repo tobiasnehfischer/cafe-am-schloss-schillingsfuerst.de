@@ -25,7 +25,7 @@ const MENUS = [
     'sonntagskarte' => [
         'label' => 'Sonntagskarte',
         'icon'  => 'fa-calendar-star',
-        'text'  => 'Sonntagsbraten und Festtagsgerichte – jeden Sonntag von [hh:mm] bis [hh:mm] Uhr.',
+        'text'  => 'Sonntagsbraten und Festtagsgerichte – jeden Sonntag.',
     ],
     'biergartenkarte' => [
         'label' => 'Biergartenkarte',
@@ -186,7 +186,14 @@ function notice_status(array $content, ?DateTimeImmutable $now = null): array
         return ['visible' => false, 'reason' => 'Anzeigezeitraum ist am ' . $fmt($n['until']) . ' abgelaufen.'];
     }
     $range = $n['until'] !== '' ? ' (bis einschließlich ' . $fmt($n['until']) . ')' : '';
-    return ['visible' => true, 'reason' => 'Wird auf der Startseite angezeigt' . $range . '.'];
+    return ['visible' => true, 'reason' => 'Wird auf allen Seiten angezeigt' . $range . '.'];
+}
+
+/** Aktuell sichtbarer Hinweistext (leer, wenn keiner angezeigt wird). */
+function notice_text(): string
+{
+    $content = content_load();
+    return notice_status($content)['visible'] ? trim((string) $content['notice']['text']) : '';
 }
 
 /** Hochgeladene Karten, die tatsächlich als Datei vorhanden sind. */
@@ -209,6 +216,28 @@ function menus_available(array $content): array
         ];
     }
     return $out;
+}
+
+/** Online-Speisekarte aus app/speisekarte.php (Kategorien ohne Gerichte werden ausgelassen; 'anzeigen' => false = keine). */
+function menu_card(): array
+{
+    $file = APP . '/speisekarte.php';
+    $data = is_file($file) ? require $file : [];
+    $data = is_array($data) ? $data : [];
+    $data['kategorien'] = empty($data['anzeigen']) ? [] : array_values(array_filter(
+        (array) ($data['kategorien'] ?? []),
+        static fn($k): bool => is_array($k) && !empty($k['gerichte'])
+    ));
+    return $data + ['beispiel' => false, 'fussnote' => ''];
+}
+
+/** 12.9 → „12,90 €“; Text (z. B. „ab 3,80 €“) bleibt unverändert. */
+function format_price($price): string
+{
+    if (is_int($price) || is_float($price)) {
+        return number_format((float) $price, 2, ',', '.') . ' €';
+    }
+    return trim((string) $price);
 }
 
 function format_date(string $value): string

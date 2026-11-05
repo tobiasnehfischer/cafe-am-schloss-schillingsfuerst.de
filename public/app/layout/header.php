@@ -1,9 +1,11 @@
 <?php
 /**
- * Seitenkopf. Erwartet $page = ['title', 'description', 'nav', 'notice' (optional)].
+ * Seitenkopf. Erwartet $page = ['title', 'description', 'nav'].
+ * Der Hinweis aus dem Admin erscheint automatisch auf allen Seiten.
  * @var array $page
  */
-$cfg   = config();
+$cfg    = config();
+$notice = notice_text();
 $slug  = $page['slug'] ?? '';
 $title = ($page['title'] ?? '') !== '' ? $page['title'] . ' – ' . $cfg['site_name'] . ' Schillingsfürst' : $cfg['site_name'] . ' Schillingsfürst – Fränkische Küche';
 $navItems = [
@@ -42,11 +44,11 @@ $navItems = [
 <body class="page-<?= e($page['nav'] ?? 'none') ?>">
 <a class="visually-hidden-focusable skip-link" href="#inhalt">Zum Inhalt springen</a>
 
-<?php if (!empty($page['notice'])): ?>
+<?php if ($notice !== ''): ?>
 <aside class="notice-bar" aria-label="Aktueller Hinweis">
   <div class="container d-flex align-items-center justify-content-center gap-3 text-center">
     <i class="fa-light fa-circle-info notice-bar__icon" aria-hidden="true"></i>
-    <p class="mb-0"><?= nl2br(e($page['notice'])) ?></p>
+    <p class="mb-0"><?= nl2br(e($notice)) ?></p>
   </div>
 </aside>
 <?php endif; ?>

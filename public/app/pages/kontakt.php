@@ -2,16 +2,18 @@
 $cfg = config();
 $lat = (float) $cfg['map_lat'];
 $lon = (float) $cfg['map_lon'];
-$bbox = sprintf('%.5f,%.5f,%.5f,%.5f', $lon - 0.006, $lat - 0.003, $lon + 0.006, $lat + 0.003);
+// Ausschnitt leicht nach Osten versetzt, damit Parkplatz, Schotterplatz und Haus der Heimat sichtbar sind
+$centerLon = $lon + 0.00065;
+$bbox = sprintf('%.5f,%.5f,%.5f,%.5f', $centerLon - 0.0016, $lat - 0.0012, $centerLon + 0.0016, $lat + 0.0012);
 $mapEmbed = 'https://www.openstreetmap.org/export/embed.html?bbox=' . $bbox . '&layer=mapnik&marker=' . $lat . ',' . $lon;
-$mapLink  = 'https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lon . '#map=17/' . $lat . '/' . $lon;
+$mapLink  = 'https://www.openstreetmap.org/?mlat=' . $lat . '&mlon=' . $lon . '#map=18/' . $lat . '/' . $centerLon;
 $route    = 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode($cfg['street'] . ', ' . $cfg['zip'] . ' ' . $cfg['city']);
 
 $page = [
     'slug'        => 'kontakt',
     'nav'         => 'kontakt',
     'title'       => 'Kontakt & Anfahrt',
-    'description' => 'So finden Sie das Café am Schloss: Am Wall 10, 91583 Schillingsfürst. Telefon, Öffnungszeiten, Anfahrt und Parken.',
+    'description' => 'So finden Sie das Café am Schloss: Am Wall 10, 91583 Schillingsfürst. Telefon, Öffnungszeiten und Parkmöglichkeiten.',
 ];
 require APP . '/layout/header.php';
 ?>
@@ -45,8 +47,8 @@ require APP . '/layout/header.php';
         <p class="note"><?= e_lines($cfg['hours_note']) ?></p>
       </div>
       <div class="contact-block">
-        <h2><i class="fa-light fa-square-parking" aria-hidden="true"></i>Anfahrt &amp; Parken</h2>
-        <p>[Kurze Wegbeschreibung, z. B. ab Ortsmitte oder Autobahnausfahrt.]<br>[Hinweis zu Parkplätzen und Barrierefreiheit.]</p>
+        <h2><i class="fa-light fa-square-parking" aria-hidden="true"></i>Parken</h2>
+        <p>In der Fußgängerzone vor dem Haupteingang gibt es keine Parkplätze. Folgen Sie der Neuen Gasse. Fahren Sie wenige Meter nach dem Haus der Heimat auf den großen Schotterplatz und dann hinten herum über den Kardinalsweg zum Parkplatz direkt hinter dem Gasthaus. Dort gibt es einen eigenen Eingang.</p>
       </div>
       <div><a class="btn btn-cafe" href="<?= e($route) ?>" target="_blank" rel="noopener"><i class="fa-light fa-route" aria-hidden="true"></i>Route planen</a></div>
     </div>
@@ -64,6 +66,6 @@ require APP . '/layout/header.php';
 </section>
 
 <section class="container pb-5 text-center">
-  <img src="<?= e(asset('assets/img/wir-freuen-uns-auf-ihren-besuch.svg')) ?>" alt="Wir freuen uns auf Ihren Besuch!" class="welcome-img" width="480" height="152" loading="lazy">
+  <span class="welcome-wrap"><img src="<?= e(asset('assets/img/wir-freuen-uns-auf-ihren-besuch.svg')) ?>" alt="Wir freuen uns auf Ihren Besuch!" class="welcome-img" width="480" height="152" loading="lazy"></span>
 </section>
 <?php require APP . '/layout/footer.php'; ?>

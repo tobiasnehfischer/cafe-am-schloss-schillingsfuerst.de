@@ -88,8 +88,8 @@ $inv = static fn(string $field): string => isset($errors[$field]) ? ' is-invalid
 ?>
 <section class="hero hero--sub">
   <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6 d-flex flex-column gap-4 align-items-center text-center">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 d-flex flex-column gap-4 align-items-center text-center">
         <p class="script hero__script mb-0">Feiern am Schloss</p>
         <?= divider('divider--hero') ?>
         <h1 class="hero__title mb-0">Feierlichkeiten</h1>
@@ -98,9 +98,6 @@ $inv = static fn(string $field): string => isset($errors[$field]) ? ' is-invalid
           <a class="btn btn-cafe" href="#anfrage">Feier anfragen</a>
           <a class="btn btn-cafe-outline" href="tel:<?= e($cfg['phone_link']) ?>"><i class="fa-light fa-phone" aria-hidden="true"></i><?= e($cfg['phone']) ?></a>
         </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="photo-placeholder">[Foto: Festsaal / gedeckte Tafel]</div>
       </div>
     </div>
   </div>
@@ -145,8 +142,7 @@ foreach ($items as [$icon, $title, $text]): ?>
       <li class="col-md-4"><span class="steps__num">3</span><h3>Feiern</h3><p>Sie genießen den Tag mit Ihren Gästen – um alles Weitere kümmern wir uns.</p></li>
     </ol>
     <div class="facts">
-      <span><strong>Plätze:</strong> bis [Anzahl] Personen</span>
-      <span><strong>Räume:</strong> [Gastraum / Nebenraum / Terrasse]</span>
+      <span><strong>Plätze:</strong> bis 70 Personen</span>
       <span><strong>Essen:</strong> Menü oder Buffet nach Absprache</span>
     </div>
   </div>
@@ -169,7 +165,7 @@ foreach ($items as [$icon, $title, $text]): ?>
         <p class="mb-0">Wir melden uns so bald wie möglich bei Ihnen.</p>
       </div>
 <?php else: ?>
-      <form class="form-card" method="post" action="<?= e(url('feierlichkeiten')) ?>#anfrage" novalidate>
+      <form class="form-card" method="post" action="<?= e(url('feierlichkeiten')) ?>#anfrage" novalidate data-live-validate>
 <?php if (isset($errors['form'])): ?>
         <div class="alert alert-danger"><?= e($errors['form']) ?></div>
 <?php elseif ($errors): ?>

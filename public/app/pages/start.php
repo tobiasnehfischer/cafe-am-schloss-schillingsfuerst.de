@@ -1,18 +1,62 @@
 <?php
 $cfg     = config();
 $content = content_load();
-$status  = notice_status($content);
 $menus   = menus_available($content);
+
+// Eröffnungs-Hero bis einschließlich config 'opening_hero_until'. Lokal (php -S) testbar mit ?datum=YYYY-MM-DD.
+$today = PHP_SAPI === 'cli-server' && preg_match('~^\d{4}-\d{2}-\d{2}$~', (string) ($_GET['datum'] ?? ''))
+    ? (string) $_GET['datum']
+    : date('Y-m-d');
+$openingHero = $today <= (string) ($cfg['opening_hero_until'] ?? '');
 
 $page = [
     'slug'        => '',
     'nav'         => 'start',
     'title'       => '',
-    'description' => 'Café am Schloss in Schillingsfürst: fränkische Küche – regional, saisonal, gutbürgerlich. Mittagessen, Kaffee und hausgemachter Kuchen, Sonntagsbraten und Feierlichkeiten.',
-    'notice'      => $status['visible'] ? trim($content['notice']['text']) : '',
+    'description' => ($openingHero ? 'Eröffnung am Samstag, 21.11.2026 ab 14 Uhr mit Kaffee und Kuchen, ab 22.11. Mittagstisch. ' : '')
+        . 'Café am Schloss in Schillingsfürst: fränkische Küche – regional, saisonal, gutbürgerlich. Mittagessen, Kaffee und hausgemachter Kuchen, Sonntagsbraten und Feierlichkeiten.',
 ];
 require APP . '/layout/header.php';
 ?>
+<?php if ($openingHero): ?>
+<section class="hero hero--event">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 text-center">
+        <picture>
+          <source srcset="<?= e(asset('assets/img/logo.webp')) ?>" type="image/webp">
+          <img src="<?= e(asset('assets/img/logo.png')) ?>" alt="Logo Café am Schloss mit Zeichnung des Schlosses" width="690" height="620" class="hero__logo img-fluid" fetchpriority="high">
+        </picture>
+      </div>
+      <div class="col-lg-6 d-flex flex-column gap-4 align-items-center text-center">
+        <h1 class="mb-0 d-flex flex-column align-items-center gap-3">
+          <span class="script event__title">Eröffnung</span>
+          <span class="event__date">am Samstag, 21.11.2026</span>
+        </h1>
+        <p class="event__time mb-0">ab 14 Uhr</p>
+        <p class="script event__sub mb-0">
+          <i class="fa-light fa-mug-hot" aria-hidden="true"></i>
+          <span>Kaffee und Kuchen</span>
+          <i class="fa-light fa-cake-slice" aria-hidden="true"></i>
+        </p>
+        <?= divider('divider--hero') ?>
+        <p class="lead-text event__lead mb-0">Wir stellen uns vor und heißen Sie herzlich willkommen!</p>
+        <div class="event__next">
+          <div class="icon-circle"><i class="fa-light fa-utensils" aria-hidden="true"></i></div>
+          <div class="text-start">
+            <p class="event__next-label mb-0">Ab Sonntag, 22.11.</p>
+            <p class="event__next-title mb-0">Mittagstisch</p>
+          </div>
+        </div>
+        <div class="d-flex gap-3 flex-wrap justify-content-center">
+          <a class="btn btn-cafe" href="<?= e(url('speisekarte')) ?>">Unsere Speisekarten</a>
+          <a class="btn btn-cafe-outline" href="<?= e(url('kontakt')) ?>">Anfahrt &amp; Kontakt</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<?php else: ?>
 <section class="hero">
   <div class="container">
     <div class="row align-items-center g-5">
@@ -36,6 +80,7 @@ require APP . '/layout/header.php';
     </div>
   </div>
 </section>
+<?php endif; ?>
 
 <section class="section container">
   <header class="section-head">
@@ -69,7 +114,14 @@ require APP . '/layout/header.php';
         <div class="icon-circle"><i class="fa-light fa-book-open" aria-hidden="true"></i></div>
         <h3>Speisekarten</h3>
         <p>Fränkische Klassiker, saisonale Gerichte, Kaffee und hausgemachter Kuchen – und sonntags unsere eigene Sonntagskarte.</p>
-<?php if ($menus): ?>
+<?php if (menu_card()['kategorien']): ?>
+        <div class="mt-auto d-grid gap-2">
+          <a class="btn btn-cafe" href="<?= e(url('speisekarte')) ?>"><i class="fa-light fa-utensils" aria-hidden="true"></i>Zur Speisekarte</a>
+<?php foreach (array_diff_key($menus, ['speisekarte' => true]) as $menu): ?>
+          <a class="btn btn-cafe-outline" href="<?= e($menu['url']) ?>" target="_blank" rel="noopener"><i class="fa-light fa-file-pdf" aria-hidden="true"></i><?= e($menu['label']) ?> (PDF)</a>
+<?php endforeach; ?>
+        </div>
+<?php elseif ($menus): ?>
         <div class="mt-auto d-grid gap-2">
 <?php $first = true; foreach ($menus as $menu): ?>
           <a class="btn <?= $first ? 'btn-cafe' : 'btn-cafe-outline' ?>" href="<?= e($menu['url']) ?>" target="_blank" rel="noopener"><i class="fa-light fa-file-pdf" aria-hidden="true"></i><?= e($menu['label']) ?> (PDF)</a>
@@ -85,20 +137,17 @@ require APP . '/layout/header.php';
 
 <section class="band">
   <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6 d-flex flex-column gap-3 align-items-start">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 d-flex flex-column gap-3 align-items-center text-center">
         <p class="script band__script mb-0">Feiern am Schloss</p>
         <p class="lead-text mb-0">Konfirmation, Kommunion, Taufe, Hochzeit, runder Geburtstag oder Trauerkaffee: Wir richten Ihre Feier aus – mit fränkischem Menü oder Buffet, ganz nach Ihren Wünschen.</p>
         <a class="btn btn-cafe" href="<?= e(url('feierlichkeiten')) ?>">Mehr zu Feierlichkeiten</a>
-      </div>
-      <div class="col-lg-6">
-        <div class="photo-placeholder">[Foto: festlich gedeckte Tafel im Gastraum]</div>
       </div>
     </div>
   </div>
 </section>
 
 <section class="container section text-center">
-  <img src="<?= e(asset('assets/img/wir-freuen-uns-auf-ihren-besuch.svg')) ?>" alt="Wir freuen uns auf Ihren Besuch!" class="welcome-img" width="480" height="152" loading="lazy">
+  <span class="welcome-wrap"><img src="<?= e(asset('assets/img/wir-freuen-uns-auf-ihren-besuch.svg')) ?>" alt="Wir freuen uns auf Ihren Besuch!" class="welcome-img" width="480" height="152" loading="lazy"></span>
 </section>
 <?php require APP . '/layout/footer.php'; ?>

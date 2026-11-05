@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Pflegeoberfläche – geschützt per .htaccess/.htpasswd (siehe admin/.htaccess).
- * Pflegbar: Hinweistext Startseite (an/aus, von/bis) und drei PDF-Karten.
+ * Pflegbar: Hinweistext auf allen Seiten (an/aus, von/bis) und drei PDF-Karten.
  */
 
 require dirname(__DIR__) . '/app/init.php';
@@ -189,11 +189,11 @@ $menus  = menus_available($content);
     <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
 
     <section class="admin-card">
-      <h2><i class="fa-light fa-circle-info" aria-hidden="true"></i>Hinweis auf der Startseite</h2>
+      <h2><i class="fa-light fa-circle-info" aria-hidden="true"></i>Hinweis auf der Website</h2>
       <div class="mb-3">
         <label class="form-label" for="notice_text">Hinweistext</label>
         <textarea class="form-control" id="notice_text" name="notice_text" rows="3" maxlength="600" placeholder="z. B. Betriebsurlaub: Vom 20.12. bis 06.01. bleibt unser Café geschlossen."><?= e($form['text']) ?></textarea>
-        <div class="help mt-1">Erscheint als grüne Leiste ganz oben auf der Startseite.</div>
+        <div class="help mt-1">Erscheint als grüne Leiste ganz oben auf allen Seiten.</div>
       </div>
       <div class="form-check form-switch mb-3">
         <input class="form-check-input" type="checkbox" role="switch" id="notice_active" name="notice_active" value="1"<?= $form['active'] ? ' checked' : '' ?>>

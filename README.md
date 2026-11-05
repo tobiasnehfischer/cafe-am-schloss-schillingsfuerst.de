@@ -21,6 +21,7 @@ Keine Datenbank und kein Build-Schritt.
 | `index.php` | Front-Controller/Router: schöne URLs, 301 für alte Varianten, 404 |
 | `.htaccess` | Leitet alles, was keine echte Datei ist, an `index.php` und sperrt `app/`, `data/` und Dotfiles |
 | `app/config.php` | **Stammdaten**: Adresse, Telefon, E-Mail, Öffnungszeiten, Kartenposition, Mail-Empfänger fürs Formular |
+| `app/speisekarte.php` | **Online-Speisekarte** (Kategorien, Gerichte, Preise) für `/speisekarte` – Aufbau steht im Dateikopf, derzeit ausgeblendet (`'anzeigen' => false`) |
 | `app/mailer.php` | Mailversand per SMTP (PHPMailer) |
 | `app/smtp.php` | SMTP-Zugangsdaten (nicht im Git, Vorlage `smtp.example.php`) |
 | `app/content/` | Impressum und Datenschutz (HTML) |
@@ -69,9 +70,11 @@ in `public/index.php` bei `$routes` eintragen und in `app/layout/header.php` und
 
 Der Kunde kann pflegen:
 
-- **Hinweis auf der Startseite**: Text, Schalter aktiv/inaktiv, „anzeigen von/bis“ (beide optional, „bis“ gilt einschließlich des ganzen Tages).
+- **Hinweis (auf allen Seiten)**: Text, Schalter aktiv/inaktiv, „anzeigen von/bis“ (beide optional, „bis“ gilt einschließlich des ganzen Tages).
   Die grüne Leiste erscheint nur, wenn Text vorhanden, aktiv und heute im Zeitraum ist. Den aktuellen Zustand zeigt die Oberfläche an.
 - **Drei PDFs**: Speisekarte, Sonntagskarte, Biergartenkarte. Hochladen ersetzt die alte Datei, „Karte entfernen“ löscht sie.
+  Auf `/speisekarte` stehen die PDF-Karten. Die Speisekarte als Text (`app/speisekarte.php`, nicht über die Pflegeoberfläche) ist vorbereitet, aber ausgeblendet (`'anzeigen' => false`).
+  Mit `'anzeigen' => true` erscheint sie unter den PDF-Karten und die Startseite verlinkt „Zur Speisekarte“ statt des Speisekarten-PDFs. Sonntags- und Biergartenkarte gibt es nur als PDF.
   Ohne PDF wird der Button bzw. die Karte auf der Website nicht angezeigt. Es werden nur echte PDFs angenommen (max. 20 MB, siehe `app/config.php`).
 
 ### Einrichtung auf dem Server
@@ -83,6 +86,13 @@ Der Kunde kann pflegen:
 5. Upload-Limits: `admin/.user.ini` gilt für PHP-FPM/CGI. Bei mod_php stattdessen `php_value upload_max_filesize 20M` und `php_value post_max_size 64M` in `admin/.htaccess`.
 
 Zusätzlich sperrt `admin/index.php` den Zugriff, wenn keine HTTP-Anmeldung aktiv ist (z. B. falls `.htaccess`-Dateien ignoriert werden).
+
+## Eröffnungs-Hero (Startseite)
+
+Bis einschließlich `opening_hero_until` in `app/config.php` (aktuell `2026-11-22`) zeigt die Startseite statt des normalen Heros
+den Eröffnungs-Hero (21.11.2026 ab 14 Uhr, Kaffee und Kuchen, ab 22.11. Mittagstisch). Ab dem Folgetag erscheint automatisch
+wieder der normale Hero, es muss nichts hochgeladen werden. Texte in `app/pages/start.php`. Lokal lässt sich ein Datum
+simulieren: `/?datum=2026-11-23` (nur unter `php -S`).
 
 ## Anfrageformular (Feierlichkeiten)
 
@@ -113,8 +123,9 @@ im Projektordner ausführen, dann http://127.0.0.1:8090/ öffnen. `tools/dev-rou
 
 ## Noch offen
 
-- [ ] Platzhalter in `[eckigen Klammern]` ersetzen: Öffnungszeiten (`app/config.php`), Zeiten der Sonntagskarte (`app/init.php` → `MENUS`), Anfahrt/Parken (`app/pages/kontakt.php`), Plätze/Räume (`app/pages/feierlichkeiten.php`)
-- [ ] Fotos statt der gestrichelten Platzhalter (Startseite, Feierlichkeiten)
+- [ ] Platzhalter in `[eckigen Klammern]` ersetzen: Parken (`app/pages/kontakt.php`)
+- [ ] Später: echte Speisekarte in `app/speisekarte.php` eintragen (aktuell Beispieldaten, ausgeblendet), danach `'beispiel' => false` und `'anzeigen' => true`
+- [ ] Foto Gastraum/gedeckte Tafel: vorerst ohne Foto (Startseite „Feiern am Schloss“ und Feierlichkeiten-Hero einspaltig, zentriert). Wenn ein Foto da ist, wieder als zweite Spalte einbauen (CSS `.photo-placeholder` ist noch vorhanden)
 - [ ] `public/app/smtp.php` anlegen (SMTP-Zugangsdaten), mit `tools/smtp-test.php` prüfen, Formular auf dem Server testen
 - [ ] `.htpasswd` anlegen und `admin/.htaccess` anpassen
 - [ ] Logo: `quellen/logo.svg` (900 KB, enthält Rastergrafiken) ist für das Web zu schwer. Verwendet wird `assets/img/logo.webp`/`.png` (690 px). Für Retina-Bildschirme den Export mit ca. 1100 px Breite als PNG liefern lassen.
