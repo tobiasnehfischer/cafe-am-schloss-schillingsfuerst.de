@@ -114,16 +114,16 @@ require APP . '/layout/header.php';
         <div class="icon-circle"><i class="fa-light fa-book-open" aria-hidden="true"></i></div>
         <h3>Speisekarten</h3>
         <p>Fränkische Klassiker, saisonale Gerichte, Kaffee und hausgemachter Kuchen – und sonntags unsere eigene Sonntagskarte.</p>
-<?php if (menu_card()['kategorien']): ?>
+<?php
+// Speisekarte (Teile oder Online-Karte) → Link zur Seite, alle übrigen Karten (Sonntagskarte) direkt als PDF
+$pdfButtons = array_filter($menus, static fn(array $m): bool => $m['group'] !== 'speisekarte');
+$toMenuPage = menu_online() || count($pdfButtons) < count($menus);
+if ($toMenuPage || $pdfButtons): $first = true; ?>
         <div class="mt-auto d-grid gap-2">
+<?php if ($toMenuPage): $first = false; ?>
           <a class="btn btn-cafe" href="<?= e(url('speisekarte')) ?>"><i class="fa-light fa-utensils" aria-hidden="true"></i>Zur Speisekarte</a>
-<?php foreach (array_diff_key($menus, ['speisekarte' => true]) as $menu): ?>
-          <a class="btn btn-cafe-outline" href="<?= e($menu['url']) ?>" target="_blank" rel="noopener"><i class="fa-light fa-file-pdf" aria-hidden="true"></i><?= e($menu['label']) ?> (PDF)</a>
-<?php endforeach; ?>
-        </div>
-<?php elseif ($menus): ?>
-        <div class="mt-auto d-grid gap-2">
-<?php $first = true; foreach ($menus as $menu): ?>
+<?php endif; ?>
+<?php foreach ($pdfButtons as $menu): ?>
           <a class="btn <?= $first ? 'btn-cafe' : 'btn-cafe-outline' ?>" href="<?= e($menu['url']) ?>" target="_blank" rel="noopener"><i class="fa-light fa-file-pdf" aria-hidden="true"></i><?= e($menu['label']) ?> (PDF)</a>
 <?php $first = false; endforeach; ?>
         </div>

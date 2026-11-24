@@ -15,19 +15,65 @@ define('DATA_DIR', ROOT . '/data');
 define('CONTENT_FILE', DATA_DIR . '/content.json');
 define('MENU_DIR', ROOT . '/karten');
 
-/** Die drei pflegbaren Karten (Reihenfolge = Anzeige-Reihenfolge). */
-const MENUS = [
+/**
+ * Gruppen der PDF-Karten (Reihenfolge = Reihenfolge in der Pflegeoberfläche).
+ * 'public' => false: in der Pflegeoberfläche pflegbar, auf der Website (noch) nicht sichtbar.
+ */
+const MENU_GROUPS = [
     'speisekarte' => [
-        'label' => 'Speisekarte',
-        'icon'  => 'fa-utensils',
-        'text'  => 'Fränkische Klassiker, saisonale Gerichte, Kaffee und hausgemachter Kuchen.',
+        'label'  => 'Speisekarte',
+        'icon'   => 'fa-utensils',
+        'public' => true,
+        'hilfe'  => 'Die Speisekarte besteht aus vier Teilen mit je einem PDF. Auf der Website stehen sie gemeinsam unter „Speisekarte“.',
     ],
     'sonntagskarte' => [
+        'label'  => 'Sonntagskarte',
+        'icon'   => 'fa-calendar-star',
+        'public' => true,
+        'hilfe'  => '',
+    ],
+    'biergarten' => [
+        'label'  => 'Biergartenkarte',
+        'icon'   => 'fa-beer-mug',
+        'public' => false, // Biergarten kommt erst später – auf true setzen, sobald die Karte auf die Website soll
+        'hilfe'  => 'Wird derzeit nicht auf der Website angezeigt. Das PDF kann trotzdem schon hochgeladen werden.',
+    ],
+];
+
+/** Die pflegbaren PDF-Karten (Reihenfolge = Anzeige-Reihenfolge). Datei auf dem Server: karten/<schlüssel>.pdf */
+const MENUS = [
+    'warme-kueche' => [
+        'group' => 'speisekarte',
+        'label' => 'Warme Küche',
+        'icon'  => 'fa-plate-utensils',
+        'text'  => 'Suppen, Salate, Kleinigkeiten für den kleinen Hunger und unsere Hauptgerichte.',
+    ],
+    'vesper' => [
+        'group' => 'speisekarte',
+        'label' => 'Vesper',
+        'icon'  => 'fa-bread-slice',
+        'text'  => 'Herzhafte fränkische Schmankerl – Wurstsalat, überbackene Toasts und Bratwürste.',
+    ],
+    'nachtisch' => [
+        'group' => 'speisekarte',
+        'label' => 'Nachtisch',
+        'icon'  => 'fa-cake-slice',
+        'text'  => 'Hofeis aus Geslau sowie hausgemachte Kuchen und Torten.',
+    ],
+    'getraenke' => [
+        'group' => 'speisekarte',
+        'label' => 'Getränke',
+        'icon'  => 'fa-mug-hot',
+        'text'  => 'Bier, alkoholfreie Getränke, Kaffee und Tee, fränkischer Wein und Aperitifs.',
+    ],
+    'sonntagskarte' => [
+        'group' => 'sonntagskarte',
         'label' => 'Sonntagskarte',
         'icon'  => 'fa-calendar-star',
         'text'  => 'Sonntagsbraten und Festtagsgerichte – jeden Sonntag.',
     ],
     'biergartenkarte' => [
+        'group' => 'biergarten',
         'label' => 'Biergartenkarte',
         'icon'  => 'fa-beer-mug',
         'text'  => 'Brotzeiten, kühle Getränke und leichte Gerichte für warme Tage in unserem Biergarten.',
@@ -130,6 +176,8 @@ function content_defaults(): array
     return [
         'notice' => ['text' => '', 'active' => false, 'from' => '', 'until' => ''],
         'menus'  => $menus,
+        // text null = Startfassung aus app/speisekarte.md
+        'menu_text' => ['active' => true, 'text' => null, 'updated' => ''],
     ];
 }
 
@@ -146,6 +194,7 @@ function content_load(): array
     return [
         'notice' => array_merge($defaults['notice'], (array) ($data['notice'] ?? [])),
         'menus'  => array_merge($defaults['menus'], array_intersect_key((array) ($data['menus'] ?? []), $defaults['menus'])),
+        'menu_text' => array_merge($defaults['menu_text'], (array) ($data['menu_text'] ?? [])),
     ];
 }
 
@@ -196,11 +245,17 @@ function notice_text(): string
     return notice_status($content)['visible'] ? trim((string) $content['notice']['text']) : '';
 }
 
-/** Hochgeladene Karten, die tatsächlich als Datei vorhanden sind. */
-function menus_available(array $content): array
+/**
+ * Hochgeladene Karten, die tatsächlich als Datei vorhanden sind.
+ * Karten aus Gruppen mit 'public' => false nur mit $includeHidden (Pflegeoberfläche).
+ */
+function menus_available(array $content, bool $includeHidden = false): array
 {
     $out = [];
     foreach (MENUS as $slug => $meta) {
+        if (!$includeHidden && empty(MENU_GROUPS[$meta['group']]['public'])) {
+            continue;
+        }
         $entry = $content['menus'][$slug] ?? null;
         if (!is_array($entry) || empty($entry['url'])) {
             continue;
@@ -218,17 +273,173 @@ function menus_available(array $content): array
     return $out;
 }
 
-/** Online-Speisekarte aus app/speisekarte.php (Kategorien ohne Gerichte werden ausgelassen; 'anzeigen' => false = keine). */
-function menu_card(): array
+/* ------------------------------------------------------ Online-Speisekarte */
+
+/** Mitgelieferte Startfassung der Speisekarte als Text (solange in der Pflegeoberfläche nichts gespeichert wurde). */
+define('MENU_TEXT_DEFAULT', APP . '/speisekarte.md');
+
+/** Text der Online-Speisekarte (gespeicherte Fassung oder Startfassung). */
+function menu_text(array $content): string
 {
-    $file = APP . '/speisekarte.php';
-    $data = is_file($file) ? require $file : [];
-    $data = is_array($data) ? $data : [];
-    $data['kategorien'] = empty($data['anzeigen']) ? [] : array_values(array_filter(
-        (array) ($data['kategorien'] ?? []),
-        static fn($k): bool => is_array($k) && !empty($k['gerichte'])
-    ));
-    return $data + ['beispiel' => false, 'fussnote' => ''];
+    $text = $content['menu_text']['text'] ?? null;
+    if (!is_string($text)) {
+        $text = is_file(MENU_TEXT_DEFAULT) ? (string) file_get_contents(MENU_TEXT_DEFAULT) : '';
+    }
+    return str_replace(["\r\n", "\r"], "\n", $text);
+}
+
+/** Online-Speisekarte für die Website ([] wenn ausgeschaltet oder leer). */
+function menu_online(): array
+{
+    $content = content_load();
+    return empty($content['menu_text']['active']) ? [] : menu_parse(menu_text($content));
+}
+
+/**
+ * Speisekarte im einfachen Textformat einlesen:
+ *   # Teil            (Warme Küche, Vesper, …)
+ *   ## Überschrift    (Unsere Suppen, …)
+ *   ### Zwischentitel (z. B. Weingut)
+ *   Name | Preis | weiterer Preis   (Gericht; Zeilen direkt darunter = Beschreibung)
+ *   sonstige Zeilen = Hinweistext (nach einer Leerzeile)
+ * Ergebnis: Teile → Abschnitte → Einträge (item/text/sub).
+ */
+function menu_parse(string $text): array
+{
+    $parts = [];
+    $p = $c = null;       // Index aktueller Teil / Abschnitt
+    unset($last);         // $last = Referenz auf den letzten Eintrag (für Folgezeilen ohne Leerzeile)
+    $newPart = static function (string $title) use (&$parts): int {
+        $parts[] = ['title' => $title, 'id' => menu_anchor($title), 'intro' => [], 'cats' => []];
+        return count($parts) - 1;
+    };
+    $newCat = static function (int $p, string $title) use (&$parts): int {
+        $parts[$p]['cats'][] = ['title' => $title, 'entries' => []];
+        return count($parts[$p]['cats']) - 1;
+    };
+
+    foreach (explode("\n", str_replace(["\r\n", "\r"], "\n", $text)) as $line) {
+        $line = trim((string) preg_replace('~^\s*[-*•]\s+~u', '', $line));
+        if ($line === '') {
+            unset($last);
+            continue;
+        }
+        if (preg_match('~^(#{1,3})\s*(.*)$~u', $line, $m)) {
+            unset($last);
+            $title = trim($m[2], " #\t");
+            $level = strlen($m[1]);
+            if ($level === 1) {
+                $p = $newPart($title);
+                $c = null;
+            } elseif ($level === 2) {
+                $p = $p ?? $newPart('');
+                $c = $newCat($p, $title);
+            } elseif ($title !== '') {
+                $p = $p ?? $newPart('');
+                $c = $c ?? $newCat($p, '');
+                $parts[$p]['cats'][$c]['entries'][] = ['type' => 'sub', 'title' => $title];
+            }
+            continue;
+        }
+        $p = $p ?? $newPart('');
+
+        // Gericht: „Name | Preis | weiterer Preis“
+        if (strpos($line, '|') !== false && trim((string) strstr($line, '|', true)) !== '') {
+            unset($last);
+            $cells  = array_map('trim', explode('|', $line));
+            $name   = array_shift($cells);
+            $prices = [];
+            foreach ($cells as $cell) {
+                if ($cell === '') {
+                    continue;
+                }
+                $cell = menu_price_normalize($cell);
+                $prices[] = preg_match('~^(.*?)\s*((?:ab\s+)?\d[\d.]*(?:,\d{1,2})?\s€)$~u', $cell, $pm)
+                    ? ['label' => $pm[1], 'amount' => $pm[2]]
+                    : ['label' => '', 'amount' => $cell];
+            }
+            $c = $c ?? $newCat($p, '');
+            $parts[$p]['cats'][$c]['entries'][] = ['type' => 'item', 'name' => $name, 'prices' => $prices, 'text' => []];
+            $last = &$parts[$p]['cats'][$c]['entries'][count($parts[$p]['cats'][$c]['entries']) - 1];
+            continue;
+        }
+
+        // Textzeile direkt unter einem Gericht/Text = Fortsetzung, sonst neuer Hinweistext
+        if (isset($last)) {
+            $last[$last['type'] === 'item' ? 'text' : 'lines'][] = $line;
+            continue;
+        }
+        if ($c === null) {
+            $parts[$p]['intro'][] = ['type' => 'text', 'lines' => [$line]];
+            $last = &$parts[$p]['intro'][count($parts[$p]['intro']) - 1];
+        } else {
+            $parts[$p]['cats'][$c]['entries'][] = ['type' => 'text', 'lines' => [$line]];
+            $last = &$parts[$p]['cats'][$c]['entries'][count($parts[$p]['cats'][$c]['entries']) - 1];
+        }
+    }
+    unset($last);
+
+    // Teile ohne Inhalt (nur Überschrift) und leere Abschnitte auslassen
+    foreach ($parts as $i => $part) {
+        $parts[$i]['cats'] = array_values(array_filter($part['cats'], static fn(array $cat): bool => (bool) $cat['entries']));
+    }
+    return array_values(array_filter($parts, static fn(array $part): bool => $part['cats'] || $part['intro']));
+}
+
+/**
+ * Abschnitte auf zwei Spalten verteilen (für große Bildschirme): Spalte 1 = die ersten Abschnitte,
+ * Spalte 2 = der Rest, Trennstelle so, dass beide Spalten möglichst gleich hoch sind.
+ * Höhe grob geschätzt aus Überschrift, Gerichten und Textlänge.
+ */
+function menu_columns(array $cats): array
+{
+    if (count($cats) < 2) {
+        return [$cats];
+    }
+    $lines = static fn(array $texts): float => array_sum(array_map(static fn(string $t): float => ceil(mb_strlen($t) / 60), $texts));
+    $weights = [];
+    foreach ($cats as $cat) {
+        $w = 3.0; // Kartenrahmen + Überschrift
+        foreach ($cat['entries'] as $en) {
+            if ($en['type'] === 'item') {
+                $w += 1.3 + max(count($en['prices']) - 1, 0) * 0.6 + $lines($en['text']) * 0.8;
+            } elseif ($en['type'] === 'sub') {
+                $w += 1.5;
+            } else {
+                $w += 0.4 + $lines($en['lines']) * 0.8;
+            }
+        }
+        $weights[] = $w;
+    }
+    $total = array_sum($weights);
+    $best  = 1;
+    $bestDiff = INF;
+    $left = 0.0;
+    for ($k = 1; $k < count($cats); $k++) {
+        $left += $weights[$k - 1];
+        $diff = max($left, $total - $left);
+        if ($diff < $bestDiff) {
+            $bestDiff = $diff;
+            $best = $k;
+        }
+    }
+    return [array_slice($cats, 0, $best), array_slice($cats, $best)];
+}
+
+/** „4,80€“ → „4,80 €“, „0,5l“ → „0,5 l“ */
+function menu_price_normalize(string $price): string
+{
+    $price = preg_replace('~(\d)\s*€~u', '$1 €', $price);
+    $price = preg_replace('~(\d)\s*(l|cl|ml)\b~u', '$1 $2', $price);
+    return trim(preg_replace('~\s+~u', ' ', $price));
+}
+
+/** Anker für Überschriften: „Warme Küche“ → „karte-warme-kueche“ */
+function menu_anchor(string $title): string
+{
+    $slug = trim((string) preg_replace('~[^a-z0-9]+~', '-',
+        strtr(mb_strtolower($title), ['ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss', '&' => 'und'])), '-');
+    return 'karte-' . ($slug !== '' ? $slug : 'teil');
 }
 
 /** 12.9 → „12,90 €“; Text (z. B. „ab 3,80 €“) bleibt unverändert. */

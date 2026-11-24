@@ -203,30 +203,41 @@ a:focus-visible, button:focus-visible, .btn:focus-visible { outline: 3px solid v
 
 .menu-card { padding: 2.75rem 2.5rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1rem; border-radius: 24px; }
 .menu-card h2 { margin: 0; font-size: 1.875rem; letter-spacing: .1em; }
+.menu-card--compact { padding: 2.25rem 1.5rem; }
+.menu-card--compact h3 { margin: 0; font-size: 1.5rem; letter-spacing: .08em; }
+#karten { scroll-margin-top: 76px; }
 .menu-card__text { margin: 0; color: var(--cafe-text-soft); max-width: 400px; }
 .menu-card__meta { margin: 0; font-size: .875rem; letter-spacing: .04em; color: var(--cafe-muted); }
 .menu-card__actions { display: grid; gap: .6rem; width: 100%; max-width: 260px; }
 .empty-state { max-width: 640px; }
 
 /* ---------- Online-Speisekarte ---------- */
-.sample-note { max-width: 640px; margin: 0 auto 2rem; padding: .6rem 1rem; border: 2px dashed #C9A45C; border-radius: 12px; background: #FBEFD2; color: #6B5A35; text-align: center; letter-spacing: .03em; }
 #speisekarte { scroll-margin-top: 76px; }
 .menu-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-bottom: 2.5rem; }
 .menu-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: .4rem 1.1rem; border: 1px solid var(--cafe-border); border-radius: 999px; background: var(--cafe-surface); color: var(--cafe-text); text-decoration: none; letter-spacing: .04em; }
 .menu-nav a:hover { border-color: var(--cafe-gold); color: var(--cafe-gold-text); }
 .menu-cat { scroll-margin-top: 110px; padding: 2rem 2rem 1.5rem; background: var(--cafe-surface); border: 1px solid var(--cafe-border); border-radius: 20px; }
 .menu-cat__head { display: flex; align-items: center; gap: 1rem; padding-bottom: 1rem; margin-bottom: .5rem; border-bottom: 2px solid var(--cafe-gold); }
-.menu-cat__head h3 { margin: 0; font-size: 1.5rem; letter-spacing: .08em; }
+.menu-cat__head h4 { margin: 0; font-size: 1.4rem; letter-spacing: .08em; }
+.menu-cat__text { margin: .75rem 0 .25rem; font-size: .9375rem; line-height: 1.6; color: var(--cafe-muted); font-style: italic; }
+.menu-sub { margin: 1.4rem 0 .1rem; font-size: 1.05rem; font-weight: 600; letter-spacing: .04em; color: var(--cafe-gold-text); }
+.menu-part { scroll-margin-top: 90px; }
+.menu-part + .menu-part { margin-top: clamp(3rem, 6vw, 4.5rem); }
+.menu-part__title { margin: 0 0 .75rem; text-align: center; font-size: clamp(1.5rem, 3.5vw, 1.875rem); letter-spacing: .12em; text-transform: uppercase; }
+.menu-part__intro { max-width: 640px; margin: 0 auto 1.75rem; text-align: center; color: var(--cafe-text-soft); }
 .menu-cat__head .note { margin-top: .2rem; font-size: .875rem; }
 .dishes { list-style: none; margin: 0; padding: 0; }
 .dish { padding: .85rem 0; }
 .dish + .dish { border-top: 1px solid #EFE3C4; }
-.dish__head { display: flex; align-items: baseline; gap: .5rem; }
+.dish--short { padding: .55rem 0; }
+/* Preise rechts (float): Name + Punkte daneben, Beschreibung direkt unter dem Namen und läuft unter den Preisen weiter */
+.dish__head { display: flow-root; }
+.dish__line { display: flex; align-items: baseline; gap: .5rem; }
 .dish__name { font-weight: 600; letter-spacing: .02em; }
-.dish__dots { flex: 1 1 1.5rem; min-width: 1.5rem; border-bottom: 2px dotted #D9C48F; transform: translateY(-.3em); }
-.dish__price { white-space: nowrap; font-weight: 600; color: var(--cafe-text); }
+.dish__dots { flex: 1 1 1.5rem; min-width: 1rem; border-bottom: 2px dotted #D9C48F; transform: translateY(-.3em); }
+.dish__price { float: right; margin: .1rem 0 .25rem .5rem; white-space: nowrap; font-weight: 600; color: var(--cafe-text); display: flex; flex-direction: column; align-items: flex-end; line-height: 1.55; }
+.dish__size { font-weight: 400; font-size: .875rem; color: var(--cafe-muted); }
 .dish__text { margin: .2rem 0 0; font-size: .9375rem; line-height: 1.55; color: var(--cafe-muted); }
-.dish__tag { display: inline-flex; align-items: center; gap: .3rem; margin-left: .35rem; padding: .05rem .5rem; border-radius: 999px; background: #E9EFD9; color: #3E5A2C; font-size: .75rem; font-weight: 400; letter-spacing: .03em; vertical-align: .1em; white-space: nowrap; }
 
 .photo-placeholder { aspect-ratio: 4 / 3; border-radius: 20px; border: 2px dashed #C9A45C; background: #FBEFD2; display: flex; align-items: center; justify-content: center; text-align: center; color: #6B5A35; letter-spacing: .04em; padding: 1.5rem; }
 
@@ -297,7 +308,7 @@ a:focus-visible, button:focus-visible, .btn:focus-visible { outline: 3px solid v
   .info-card, .form-card { padding: 1.75rem 1.4rem; }
   .menu-card { padding: 2rem 1.5rem; }
   .menu-cat { padding: 1.5rem 1.25rem 1rem; scroll-margin-top: 90px; }
-  .menu-cat__head h3 { font-size: 1.3rem; }
+  .menu-cat__head h4 { font-size: 1.3rem; }
   .hours { gap: .4rem 1rem; }
 }
 

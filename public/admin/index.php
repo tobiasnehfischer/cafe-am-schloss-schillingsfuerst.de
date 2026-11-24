@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Pflegeoberfläche – geschützt per .htaccess/.htpasswd (siehe admin/.htaccess).
- * Pflegbar: Hinweistext auf allen Seiten (an/aus, von/bis) und drei PDF-Karten.
+ * Pflegbar: Hinweistext auf allen Seiten (an/aus, von/bis), die Speisekarte als Text und die PDF-Karten aus MENUS (gruppiert nach MENU_GROUPS).
  */
 
 require dirname(__DIR__) . '/app/init.php';
@@ -37,6 +37,7 @@ $maxBytes = (int) $cfg['upload_max_mb'] * 1048576;
 $content  = content_load();
 $errors   = [];
 $form     = $content['notice'];
+$menuForm = ['active' => !empty($content['menu_text']['active']), 'text' => menu_text($content)];
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     // post_max_size überschritten → PHP liefert leeres $_POST
@@ -68,6 +69,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         }
         if ($form['active'] && $form['text'] === '') {
             $errors[] = 'Bitte einen Hinweistext eingeben oder den Hinweis ausschalten.';
+        }
+
+        // ---- Speisekarte als Text
+        $menuForm = [
+            'active' => !empty($_POST['menu_active']),
+            'text'   => str_replace(["\r\n", "\r"], "\n", rtrim((string) ($_POST['menu_text'] ?? ''))),
+        ];
+        $menuReset = !empty($_POST['menu_reset']);
+        if (!mb_check_encoding($menuForm['text'], 'UTF-8')) {
+            $errors[] = 'Die Speisekarte enthält ungültige Zeichen.';
+            $menuForm['text'] = mb_convert_encoding($menuForm['text'], 'UTF-8', 'UTF-8');
+        } elseif (mb_strlen($menuForm['text']) > 60000) {
+            $errors[] = 'Die Speisekarte ist zu lang (max. 60.000 Zeichen).';
         }
 
         // ---- PDFs prüfen (erst alles prüfen, dann speichern)
@@ -118,6 +132,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     }
                 }
                 $content['notice'] = $form;
+                $oldMenu = $content['menu_text'];
+                if ($menuReset) {
+                    $content['menu_text'] = ['active' => $menuForm['active'], 'text' => null, 'updated' => date('Y-m-d H:i:s')];
+                    $messages[] = 'Speisekarte (Text) auf die Startfassung zurückgesetzt.';
+                } elseif ($menuForm['text'] !== rtrim(menu_text($content))) {
+                    $content['menu_text'] = ['active' => $menuForm['active'], 'text' => $menuForm['text'], 'updated' => date('Y-m-d H:i:s')];
+                    $messages[] = 'Speisekarte (Text) geändert.';
+                } else {
+                    // unverändert: Text nicht anfassen (Startfassung bleibt Startfassung)
+                    $content['menu_text']['active'] = $menuForm['active'];
+                }
+                if ($oldMenu['active'] !== $content['menu_text']['active']) {
+                    $messages[] = 'Speisekarte (Text) ' . ($menuForm['active'] ? 'eingeblendet.' : 'ausgeblendet.');
+                }
                 content_save($content);
                 $_SESSION['flash'] = array_merge(['Änderungen gespeichert.'], $messages);
                 redirect(url('admin/'));
@@ -132,7 +160,8 @@ $flash = $_SESSION['flash'] ?? [];
 unset($_SESSION['flash']);
 
 $status = notice_status(['notice' => $form] + $content);
-$menus  = menus_available($content);
+$menus  = menus_available($content, true);
+$menuParsed = menu_parse($menuForm['text']);
 ?><!doctype html>
 <html lang="de">
 <head>
@@ -158,6 +187,10 @@ $menus  = menus_available($content);
   .status--off { background: #F3E8CC; color: #6B5A35; }
   .form-control[type=file] { min-height: auto; padding: .6rem .75rem; }
   .help { font-size: .875rem; color: var(--cafe-muted); }
+  .menu-text { font-family: Consolas, "Courier New", monospace; font-size: .95rem; line-height: 1.5; }
+  .syntax summary { cursor: pointer; color: var(--cafe-gold-text); }
+  .syntax table { --bs-table-bg: transparent; font-size: .875rem; }
+  .syntax code { white-space: nowrap; color: var(--cafe-text); }
 </style>
 </head>
 <body>
@@ -215,12 +248,21 @@ $menus  = menus_available($content);
       </div>
     </section>
 
+<?php $firstGroup = true; foreach (MENU_GROUPS as $group => $g):
+    $slugs = array_keys(array_filter(MENUS, static fn(array $m): bool => $m['group'] === $group));
+    if (!$slugs) { continue; }
+    $single = count($slugs) === 1; ?>
     <section class="admin-card">
-      <h2><i class="fa-light fa-file-pdf" aria-hidden="true"></i>Speisekarten (PDF)</h2>
-      <p class="help mb-4">Für jede Karte kann ein PDF hochgeladen werden (max. <?= (int) $cfg['upload_max_mb'] ?> MB). Ein neues PDF ersetzt das alte. Ist keine Datei hinterlegt, wird der Button auf der Website nicht angezeigt.</p>
-<?php foreach (MENUS as $slug => $meta): $cur = $menus[$slug] ?? null; ?>
+      <h2><i class="fa-light <?= e($g['icon']) ?>" aria-hidden="true"></i><?= e($g['label']) ?> (PDF)</h2>
+<?php if ($g['hilfe'] !== ''): ?>
+      <p class="help mb-3"><?php if (empty($g['public'])): ?><i class="fa-light fa-eye-slash me-1" aria-hidden="true"></i><?php endif; ?><?= e($g['hilfe']) ?></p>
+<?php endif; ?>
+<?php if ($firstGroup): ?>
+      <p class="help mb-4">Je Karte ein PDF (max. <?= (int) $cfg['upload_max_mb'] ?> MB). Ein neues PDF ersetzt das alte. Ist keine Datei hinterlegt, wird die Karte auf der Website nicht angezeigt.</p>
+<?php endif; ?>
+<?php foreach ($slugs as $slug): $meta = MENUS[$slug]; $cur = $menus[$slug] ?? null; ?>
       <div class="menu-row">
-        <label class="form-label fw-semibold" for="pdf_<?= e($slug) ?>"><?= e($meta['label']) ?></label>
+        <label class="form-label fw-semibold<?= $single ? ' visually-hidden' : '' ?>" for="pdf_<?= e($slug) ?>"><?= e($meta['label']) ?></label>
 <?php if ($cur): ?>
         <div class="d-flex flex-wrap align-items-center gap-2 gap-sm-3 mb-2">
           <a href="<?= e($cur['url']) ?>" target="_blank" rel="noopener"><i class="fa-light fa-file-pdf me-1" aria-hidden="true"></i>Aktuelle Datei ansehen</a>
@@ -231,11 +273,64 @@ $menus  = menus_available($content);
           </div>
         </div>
 <?php else: ?>
-        <p class="help mb-2"><i class="fa-light fa-eye-slash me-1" aria-hidden="true"></i>Keine Datei hinterlegt – wird auf der Website nicht angezeigt.</p>
+        <p class="help mb-2"><i class="fa-light fa-eye-slash me-1" aria-hidden="true"></i>Keine Datei hinterlegt<?= empty($g['public']) ? '.' : ' – wird auf der Website nicht angezeigt.' ?></p>
 <?php endif; ?>
         <input class="form-control" type="file" id="pdf_<?= e($slug) ?>" name="pdf_<?= e($slug) ?>" accept="application/pdf,.pdf">
       </div>
 <?php endforeach; ?>
+    </section>
+<?php $firstGroup = false; endforeach; ?>
+
+    <section class="admin-card" id="speisekarte-text">
+      <h2><i class="fa-light fa-book-open" aria-hidden="true"></i>Speisekarte als Text</h2>
+      <p class="help mb-3">Steht auf der Seite „Speisekarte“ zum Nachlesen (zusätzlich zu den PDFs). Preise und Gerichte einfach im Textfeld ändern und unten auf „Speichern“ klicken.</p>
+      <div class="form-check form-switch mb-3">
+        <input class="form-check-input" type="checkbox" role="switch" id="menu_active" name="menu_active" value="1"<?= $menuForm['active'] ? ' checked' : '' ?>>
+        <label class="form-check-label" for="menu_active">Auf der Website anzeigen</label>
+      </div>
+      <details class="syntax mb-3">
+        <summary>So ist der Text aufgebaut</summary>
+        <table class="table table-sm mb-0 mt-2">
+          <tbody>
+            <tr><td><code># Warme Küche</code></td><td>Teil der Speisekarte (große Überschrift)</td></tr>
+            <tr><td><code>## Unsere Suppen</code></td><td>Kleine Überschrift</td></tr>
+            <tr><td><code>### Weingut Hofmann</code></td><td>Zwischenüberschrift (optional)</td></tr>
+            <tr><td><code>Flädlesuppe | 4,80 €</code></td><td>Gericht und Preis, getrennt durch einen senkrechten Strich <code>|</code> (Taste <kbd>AltGr</kbd> + <kbd>&lt;</kbd>)</td></tr>
+            <tr><td><code>Kräftige Brühe mit …</code></td><td>Zeile <strong>direkt unter</strong> dem Gericht = Beschreibung</td></tr>
+            <tr><td><code>Cola | 0,3 l 3,50 € | 0,5 l 4,90 €</code></td><td>Mehrere Preise: weitere <code>|</code> anhängen</td></tr>
+            <tr><td><code>Schnitzel | 15,80 € | halbe Portion 12,80 €</code></td><td>Text vor dem Preis wird klein davor angezeigt</td></tr>
+            <tr><td><em>Leerzeile</em></td><td>Trennt Gerichte. Text nach einer Leerzeile (ohne <code>|</code>) erscheint als Hinweis.</td></tr>
+          </tbody>
+        </table>
+      </details>
+      <label class="form-label visually-hidden" for="menu_text">Speisekarte</label>
+      <textarea class="form-control menu-text" id="menu_text" name="menu_text" rows="28" spellcheck="true" lang="de"><?= e($menuForm['text']) ?></textarea>
+      <div class="help mt-2">
+        Erkannt:
+<?php if ($menuParsed): ?>
+        <?= e(implode(' · ', array_map(static function (array $part): string {
+            $n = 0;
+            foreach ($part['cats'] as $cat) {
+                $n += count(array_filter($cat['entries'], static fn(array $en): bool => $en['type'] === 'item'));
+            }
+            return ($part['title'] !== '' ? $part['title'] : 'ohne Überschrift') . " ({$n})";
+        }, $menuParsed))) ?>
+<?php else: ?>
+        nichts – auf der Website wird keine Text-Speisekarte angezeigt.
+<?php endif; ?>
+<?php if (!empty($content['menu_text']['updated'])): ?>
+        <br>Zuletzt geändert am <?= e(format_date($content['menu_text']['updated'])) ?>.
+<?php endif; ?>
+      </div>
+      <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
+        <a href="<?= e(url('speisekarte')) ?>#speisekarte" target="_blank" rel="noopener"><i class="fa-light fa-arrow-up-right-from-square me-1" aria-hidden="true"></i>Auf der Website ansehen</a>
+<?php if (is_string($content['menu_text']['text'] ?? null)): ?>
+        <div class="form-check ms-sm-auto mb-0">
+          <input class="form-check-input" type="checkbox" id="menu_reset" name="menu_reset" value="1">
+          <label class="form-check-label" for="menu_reset">Auf Startfassung zurücksetzen</label>
+        </div>
+<?php endif; ?>
+      </div>
     </section>
 
     <div class="d-flex justify-content-end">

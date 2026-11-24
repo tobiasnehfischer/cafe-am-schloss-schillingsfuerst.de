@@ -21,7 +21,7 @@ Keine Datenbank und kein Build-Schritt.
 | `index.php` | Front-Controller/Router: schöne URLs, 301 für alte Varianten, 404 |
 | `.htaccess` | Leitet alles, was keine echte Datei ist, an `index.php` und sperrt `app/`, `data/` und Dotfiles |
 | `app/config.php` | **Stammdaten**: Adresse, Telefon, E-Mail, Öffnungszeiten, Kartenposition, Mail-Empfänger fürs Formular |
-| `app/speisekarte.php` | **Online-Speisekarte** (Kategorien, Gerichte, Preise) für `/speisekarte` – Aufbau steht im Dateikopf, derzeit ausgeblendet (`'anzeigen' => false`) |
+| `app/speisekarte.md` | **Startfassung der Speisekarte als Text** (aus den PDFs in `quellen/Speisekarten/`). Gilt, bis in der Pflegeoberfläche zum ersten Mal am Text etwas geändert wird – danach steht der Text in `data/content.json` |
 | `app/mailer.php` | Mailversand per SMTP (PHPMailer) |
 | `app/smtp.php` | SMTP-Zugangsdaten (nicht im Git, Vorlage `smtp.example.php`) |
 | `app/content/` | Impressum und Datenschutz (HTML) |
@@ -31,7 +31,7 @@ Keine Datenbank und kein Build-Schritt.
 | `app/pages/` | Seiten: `start`, `speisekarte`, `feierlichkeiten`, `kontakt`, `impressum`, `datenschutz`, `404` |
 | `admin/` | Pflegeoberfläche (Passwortschutz per `.htaccess`/`.htpasswd`) |
 | `data/` | `content.json` mit den gepflegten Inhalten (legt die Pflegeoberfläche an) |
-| `karten/` | Hochgeladene PDFs (`speisekarte.pdf`, `sonntagskarte.pdf`, `biergartenkarte.pdf`) |
+| `karten/` | Hochgeladene PDFs (`warme-kueche.pdf`, `vesper.pdf`, `nachtisch.pdf`, `getraenke.pdf`, `sonntagskarte.pdf`, `biergartenkarte.pdf`) |
 | `assets/css/`, `assets/js/` | Eigenes CSS/JS |
 | `assets/img/` | Logo (PNG + WebP), Wortmarke, Lilie, „Wir freuen uns …“ (SVG) |
 | `assets/fonts/` | Noto Serif (woff2), Abstract Spectrum (ttf) – lokal, ohne Google Fonts |
@@ -72,9 +72,15 @@ Der Kunde kann pflegen:
 
 - **Hinweis (auf allen Seiten)**: Text, Schalter aktiv/inaktiv, „anzeigen von/bis“ (beide optional, „bis“ gilt einschließlich des ganzen Tages).
   Die grüne Leiste erscheint nur, wenn Text vorhanden, aktiv und heute im Zeitraum ist. Den aktuellen Zustand zeigt die Oberfläche an.
-- **Drei PDFs**: Speisekarte, Sonntagskarte, Biergartenkarte. Hochladen ersetzt die alte Datei, „Karte entfernen“ löscht sie.
-  Auf `/speisekarte` stehen die PDF-Karten. Die Speisekarte als Text (`app/speisekarte.php`, nicht über die Pflegeoberfläche) ist vorbereitet, aber ausgeblendet (`'anzeigen' => false`).
-  Mit `'anzeigen' => true` erscheint sie unter den PDF-Karten und die Startseite verlinkt „Zur Speisekarte“ statt des Speisekarten-PDFs. Sonntags- und Biergartenkarte gibt es nur als PDF.
+- **PDF-Karten** (festgelegt in `MENUS`/`MENU_GROUPS` in `app/init.php`), je Karte ein PDF:
+  - **Speisekarte** in vier Teilen: Warme Küche, Vesper, Nachtisch, Getränke. Auf `/speisekarte` gemeinsam unter der Überschrift „Speisekarte“ (4 Kacheln).
+  - **Sonntagskarte**: große Kachel darunter. Die Startseite verlinkt „Zur Speisekarte“ (Seite) und die Sonntagskarte direkt als PDF.
+  - **Biergartenkarte**: pflegbar, wird aber noch **nicht** auf der Website angezeigt (`'public' => false` bei `biergarten` in `MENU_GROUPS`; zum Freischalten auf `true` setzen).
+  Hochladen ersetzt die alte Datei, „Karte entfernen“ löscht sie.
+- **Speisekarte als Text** (Textfeld, Schalter „Auf der Website anzeigen“, „Auf Startfassung zurücksetzen“). Erscheint auf `/speisekarte` unter den PDFs.
+  Format (steht auch aufklappbar in der Pflegeoberfläche): `# Teil`, `## kleine Überschrift`, `### Zwischenüberschrift`,
+  `Gericht | 4,80 €` (weitere Preise mit weiterem `|`, z. B. `| halbe Portion 12,80 €` oder `| 0,5 l 4,90 €`),
+  Zeilen direkt darunter = Beschreibung, Text nach einer Leerzeile = Hinweis. Eingelesen von `menu_parse()` in `app/init.php`.
   Ohne PDF wird der Button bzw. die Karte auf der Website nicht angezeigt. Es werden nur echte PDFs angenommen (max. 20 MB, siehe `app/config.php`).
 
 ### Einrichtung auf dem Server
@@ -124,8 +130,9 @@ im Projektordner ausführen, dann http://127.0.0.1:8090/ öffnen. `tools/dev-rou
 ## Noch offen
 
 - [ ] Platzhalter in `[eckigen Klammern]` ersetzen: Parken (`app/pages/kontakt.php`)
-- [ ] Später: echte Speisekarte in `app/speisekarte.php` eintragen (aktuell Beispieldaten, ausgeblendet), danach `'beispiel' => false` und `'anzeigen' => true`
+- [ ] Speisekarte als Text mit dem Kunden gegenlesen (aus den PDFs übernommen, kleine Schreibfehler korrigiert, Zwischenüberschrift „Secco & Weinschorle“ ergänzt)
 - [ ] Foto Gastraum/gedeckte Tafel: vorerst ohne Foto (Startseite „Feiern am Schloss“ und Feierlichkeiten-Hero einspaltig, zentriert). Wenn ein Foto da ist, wieder als zweite Spalte einbauen (CSS `.photo-placeholder` ist noch vorhanden)
 - [ ] `public/app/smtp.php` anlegen (SMTP-Zugangsdaten), mit `tools/smtp-test.php` prüfen, Formular auf dem Server testen
 - [ ] `.htpasswd` anlegen und `admin/.htaccess` anpassen
+- [ ] Biergartenkarte freischalten, sobald der Biergarten öffnet (`MENU_GROUPS` → `biergarten` → `'public' => true`)
 - [ ] Logo: `quellen/logo.svg` (900 KB, enthält Rastergrafiken) ist für das Web zu schwer. Verwendet wird `assets/img/logo.webp`/`.png` (690 px). Für Retina-Bildschirme den Export mit ca. 1100 px Breite als PNG liefern lassen.
